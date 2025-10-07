@@ -22,6 +22,34 @@ jobs:
         java-version: '17'
         cache: 'gradle'
 
+    - name: google-services.json 생성
+      run: |
+        cat > android-native/app/google-services.json << 'EOF'
+        {
+          "project_info": {
+            "project_number": "965854578277",
+            "project_id": "lonely-care-app",
+            "storage_bucket": "lonely-care-app.firebasestorage.app"
+          },
+          "client": [{
+            "client_info": {
+              "mobilesdk_app_id": "1:965854578277:android:6315e84a930432232ba88c",
+              "android_client_info": {
+                "package_name": "com.lonelycare.app"
+              }
+            },
+            "oauth_client": [],
+            "api_key": [{"current_key": "AIzaSyD6pdH5S3y6JcRQFxf5nEUliNccqM4rK5o"}],
+            "services": {
+              "appinvite_service": {
+                "other_platform_oauth_client": []
+              }
+            }
+          }],
+          "configuration_version": "1"
+        }
+        EOF
+
     - name: 웹 파일 → assets 복사
       run: |
         cd android-native/app/src/main/assets
