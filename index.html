@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 🚨 ULTIMATE: WebView 캐시 완전 무효화 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Last-Modified" content="Mon, 04 Oct 2025 08:00:00 GMT">
+    <meta name="cache-version" content="v13.5.1-ultimate-cache-break-1730695200">
+    <meta name="webview-cache-buster" content="file-rename-method-active">
+    
+    <!-- 🔥 FORCE: WebView 강제 리로드 -->
+    <script>
+        // WebView 캐시 강제 클리어
+        if (window.location.protocol === 'file:') {
+            console.log('🚨 [CACHE-BREAK] WebView 캐시 무효화 강제 실행');
+            if (typeof Storage !== 'undefined') {
+                try {
+                    localStorage.setItem('cache-break-timestamp', Date.now());
+                    sessionStorage.setItem('cache-break-version', 'v13.5.1-ultimate');
+                } catch(e) {}
+            }
+        }
+        
+        // 🚨 생명구조: 친구 목록 스피너 상태 초기화
+        window.friendsSpinnerHandled = false;
+        console.log('🔄 친구 목록 스피너 상태 초기화 완료');
+    </script>
+    
+    <title>lonely-care - 고독사 방지 앱</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- 기본 CSS + 완전 분리된 네임스페이스 CSS 파일들 -->
+    <link rel="stylesheet" href="css/base.css?v=20251007">
+    <link rel="stylesheet" href="css/login.css?v=20251007">
+    <!-- 각 페이지별 완전 분리된 CSS - 충돌 방지 -->
+    <link rel="stylesheet" href="css/friends-isolated.css?v=20251007-final-fix">
+    <link rel="stylesheet" href="css/status-isolated.css?v=20251007">
+    <link rel="stylesheet" href="css/ads-isolated.css?v=20251007-tabs-fix">
+    <link rel="stylesheet" href="css/notifications-isolated.css?v=20251007">
+    <link rel="stylesheet" href="css/profile-isolated.css?v=20251007">
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" 
+            crossorigin="anonymous"></script>
+    <!-- Firebase SDK v10 (compat mode) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 카카오 로그인 버튼 스타일 */
+        .kakao-login-btn {
+            width: 100%;
+            background: #FEE500;
+            color: #3C1E1E;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(254, 229, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kakao-login-btn:hover {
+            background: #F7DD00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(254, 229, 0, 0.4);
+        }
+
+        .kakao-login-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+            transform: none;
+        }
+
+        .kakao-login-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 로그인 진행 상황 스타일 */
+        #login-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(60, 30, 30, 0.3);
+            border-top: 2px solid #3C1E1E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        #login-status {
+            font-size: 14px;
+            color: #3C1E1E;
+        }
+
+        /* 컨테이너 전체 높이 조정 */
+        .container {
+            max-width: 400px !important;
+            margin: 0 auto !important;
+            background: white !important;
+            height: 100vh !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        /* 네비게이션 바 하단 고정 */
+        .bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            max-width: 400px !important;
+            width: 100% !important;
+            background: white !important;
+            border-top: 1px solid #e0e0e0 !important;
+            display: flex !important;
+            justify-content: space-around !important;
+            padding: 10px 0 8px 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1) !important;
+        }
+
+        .nav-item {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            background: none !important;
+            border: none !important;
+            padding: 6px 4px !important;
+            cursor: pointer !important;
+            transition: color 0.3s !important;
+            color: #666 !important;
+            text-decoration: none !important;
+            flex: 1 !important;
+        }
+
+        .nav-item.active {
+            color: #74c0fc !important;
+        }
+
+        .nav-icon {
+            font-size: 18px !important;
+            margin-bottom: 2px !important;
+        }
+
+        .nav-text {
+            font-size: 9px !important;
+            font-weight: 500 !important;
+            text-align: center !important;
+            line-height: 1.1 !important;
+            white-space: nowrap !important;
+        }
+
+        /* 메인 앱 컨테이너 */
+        #main-app {
+            display: none !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+
+        #main-app.show {
+            display: block !important;
+        }
+
+        /* 앱 컨텐츠 */
+        .app-content {
+            height: calc(100vh - 70px) !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+        }
+
+        /* 페이지 스타일 - 모든 페이지 숨기기 */
+        .page {
+            display: none !important;
+            height: calc(100vh - 70px) !important;
+            overflow-y: auto !important;
+            padding: 20px 20px 0 20px !important;
+            box-sizing: border-box !important;
+        }
+
+        .page.active {
+            display: block !important;
+        }
+
+        /* 로그인 페이지는 패딩 없이 */
+        #login-page {
+            padding: 0 !important;
+            height: 100vh !important;
+        }
+
+        /* 광고 배너 강제 스타일 적용 - 2024 현대적 디자인 */
+        .ad-banner {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+            color: #1e293b !important;
+            padding: 24px 20px !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08) !important;
+            text-align: center !important;
+            margin-bottom: 16px !important;
+            position: relative !important;
+            overflow: hidden !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            cursor: default !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        .ad-banner:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12) !important;
+            border-color: #3b82f6 !important;
+        }
+
+        .ad-banner h3 {
+            margin-bottom: 8px !important;
+            color: #0f172a !important;
+            font-size: 1.25rem !important;
+            font-weight: 600 !important;
+            letter-spacing: -0.025em !important;
+            line-height: 1.4 !important;
+        }
+
+        .ad-banner p {
+            color: #64748b !important;
+            margin-bottom: 18px !important;
+            font-size: 0.95rem !important;
+            line-height: 1.5 !important;
+            font-weight: 400 !important;
+        }
+
+        .ad-banner button {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: white !important;
+            border: none !important;
+            padding: 12px 28px !important;
+            border-radius: 12px !important;
+            cursor: pointer !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            letter-spacing: 0.025em !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+        }
+
+        .ad-banner button:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4) !important;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0;">
+    <!-- 스플래시 스크린 (강제 타임아웃 포함) -->
+    <div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <img src="icon.png" alt="lonely-care" style="width: 120px; height: 120px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+            <h1 style="color: white; font-size: 28px; font-weight: bold; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">lonely-care</h1>
+            <p style="color: rgba(255,255,255,0.8); font-size: 16px; margin: 10px 0; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">안전한 일상을 함께</p>
+            <div style="margin-top: 30px;">
+                <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+            <p id="splash-status" style="color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 15px; text-align: center; max-width: 250px;">앱을 시작하는 중...</p>
+            <div id="splash-progress" style="width: 200px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-top: 10px; overflow: hidden;">
+                <div id="splash-progress-bar" style="width: 0%; height: 100%; background: white; border-radius: 2px; transition: width 0.3s ease;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 긴급 스플래시 타임아웃 스크립트 -->
+    <script>
+        console.log('🚨 로그인 상태 확인 스크립트 로드됨');
+        
+        // 로그인 상태 체크 - Firebase 인증과 연동
+        var savedUser = localStorage.getItem('currentUser');
+        var isLoggedIn = false;
+        
+        // Firebase 인증 상태와 함께 체크
+        if (savedUser) {
+            try {
+                var userData = JSON.parse(savedUser);
+                // 유효한 사용자 데이터가 있는지 확인 (카카오 ID와 이름 필수)
+                if (userData && userData.id && userData.name && (userData.kakao_id || userData.kakaoId)) {
+                    isLoggedIn = true;
+                    console.log('✅ 유효한 로그인 세션 발견:', userData.name);
+                } else {
+                    console.log('⚠️ 불완전한 사용자 데이터, 로그인 필요');
+                    localStorage.removeItem('currentUser');
+                }
+            } catch (e) {
+                console.log('저장된 사용자 데이터 파싱 실패:', e);
+                localStorage.removeItem('currentUser');
+            }
+        }
+        
+        console.log('💾 저장된 로그인 상태:', isLoggedIn, savedUser ? '(사용자 데이터 있음)' : '(사용자 데이터 없음)');
+        
+        // 전역 변수에 로그인 상태 설정 (main.js에서 참조용)
+        window.initialLoginState = isLoggedIn;
+        
+        // 스플래시 화면 상태 업데이트 함수들
+        function updateSplashStatus(message, progress = 0) {
+            const statusElement = document.getElementById('splash-status');
+            const progressBar = document.getElementById('splash-progress-bar');
+            if (statusElement) statusElement.textContent = message;
+            if (progressBar) progressBar.style.width = progress + '%';
+            console.log('🔄 ' + message + ' (' + progress + '%)');
+        }
+
+        // Firebase 연결 대기 함수 (새로운 초기화 시스템 사용)
+        async function waitForFirebase() {
+            try {
+                updateSplashStatus('Firebase 초기화 관리자 대기 중...', 40);
+                
+                // Firebase 초기화 관리자가 로드될 때까지 대기
+                let attempts = 0;
+                const maxAttempts = 50;
+                
+                while (!window.firebaseInitializer && attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+                
+                // HTTPS 환경 확인 및 자동 전환
+                if (window.httpsManager) {
+                    updateSplashStatus('보안 환경 확인 중...', 40);
+                    const envInfo = window.httpsManager.getEnvironmentInfo();
+                    console.log('🔒 [생명구조] 환경 정보:', envInfo);
+                    
+                    // 카카오 OAuth 등 HTTPS 필수 기능 확인
+                    const httpsRequired = await window.httpsManager.autoHTTPSUpgrade(['kakao_oauth', 'push_notifications']);
+                    if (httpsRequired && !window.httpsManager.isHTTPS()) {
+                        // HTTPS로 리다이렉트 진행 중 - 여기서 중단
+                        return false;
+                    }
+                }
+
+                if (!window.firebaseInitializer) {
+                    updateSplashStatus('Firebase 초기화 관리자 로드 실패', 50);
+                    return false;
+                }
+                
+                updateSplashStatus('Firebase 초기화 중...', 50);
+                
+                // Firebase 초기화 관리자를 통한 안전한 초기화
+                const success = await window.firebaseInitializer.initializeWithRetry();
+                
+                if (success) {
+                    updateSplashStatus('Firebase 연결됨', 70);
+                    
+                    // 연결 모니터링 시작
+                    if (window.firebaseConnectionMonitor) {
+                        window.firebaseConnectionMonitor.startMonitoring();
+                    }
+                    
+                    return true;
+                } else {
+                    updateSplashStatus('Firebase 연결 실패 - 로컬 모드', 70);
+                    return false;
+                }
+                
+            } catch (error) {
+                console.error('❌ [생명구조] Firebase 초기화 오류:', error);
+                updateSplashStatus('Firebase 초기화 오류 - 로컬 모드', 70);
+                return false;
+            }
+        }
+
+        // 앱 초기화 및 화면 전환
+        async function initializeApp() {
+            try {
+                updateSplashStatus('시스템 초기화 중...', 10);
+                
+                // Firebase 연결 대기
+                updateSplashStatus('Firebase 연결 중...', 30);
+                const firebaseReady = await waitForFirebase();
+                
+                if (firebaseReady && isLoggedIn) {
+                    // 로그인된 상태에서 Firebase 사용자 검증
+                    updateSplashStatus('로그인 정보 확인 중...', 85);
+                    
+                    try {
+                        const userData = JSON.parse(savedUser);
+                        const kakaoId = userData.kakao_id || userData.kakaoId;
+                        
+                        if (kakaoId && window.storage) {
+                            // 새로운 초기화 시스템 사용
+                            await window.storage.waitForInitialization();
+                            
+                            if (window.storage.isInitialized) {
+                                const firebaseUser = await window.storage.getUserByKakaoId(kakaoId);
+                                
+                                if (!firebaseUser) {
+                                    console.log('🔥 [생명구조] Firebase에 사용자 없음, main.js에서 자동 생성됨');
+                                    // 스플래시에서는 로그인 상태 유지, main.js에서 사용자 생성 처리
+                                }
+                            } else {
+                                console.warn('⚠️ [생명구조] Firebase Storage 초기화 실패 - 로컬 모드로 진행');
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Firebase 사용자 검증 실패 (무시):', e.message);
+                    }
+                }
+                
+                updateSplashStatus(isLoggedIn ? '메인 화면 준비 중...' : '로그인 화면 준비 중...', 95);
+                
+                // 최소 2초 대기 (사용자 경험)
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                updateSplashStatus('완료!', 100);
+                
+                // 화면 전환
+                setTimeout(() => {
+                    initializeAuthState();
+                    hideSplashScreen();
+                }, 500);
+                
+            } catch (error) {
+                console.error('앱 초기화 실패:', error);
+                updateSplashStatus('초기화 실패 - 기본 모드로 진행', 100);
+                setTimeout(() => {
+                    initializeAuthState();
+                    hideSplashScreen();
+                }, 1000);
+            }
+        }
+
+        // 상태에 따라 화면 설정
+        function initializeAuthState() {
+            var authContainer = document.getElementById('auth-container');
+            var mainApp = document.getElementById('main-app');
+            var bottomNav = document.getElementById('bottom-nav');
+            
+            if (isLoggedIn) {
+                // 로그인된 상태: 메인 앱 표시
+                if (authContainer) {
+                    authContainer.classList.add('hidden');
+                    authContainer.style.display = 'none';
+                }
+                if (mainApp) {
+                    mainApp.classList.remove('hidden');
+                    mainApp.classList.add('show');
+                    mainApp.style.display = 'block';
+                }
+                if (bottomNav) {
+                    bottomNav.style.display = 'flex';
+                }
+                console.log('✅ 로그인 상태 - 메인 앱 표시');
+            } else {
+                // 로그아웃 상태: 로그인 화면 표시
+                if (authContainer) {
+                    authContainer.classList.remove('hidden');
+                    authContainer.style.display = 'block';
+                }
+                if (mainApp) {
+                    mainApp.classList.add('hidden');
+                    mainApp.classList.remove('show');
+                    mainApp.style.display = 'none';
+                }
+                if (bottomNav) {
+                    bottomNav.style.display = 'none';
+                }
+                console.log('✅ 로그아웃 상태 - 로그인 화면 표시');
+            }
+        }
+        
+        // 스플래시 화면 숨기기 함수
+        function hideSplashScreen() {
+            console.log('🚨 스플래시 제거 시작');
+            var splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.style.transition = 'opacity 0.5s ease-out';
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    console.log('✅ 스플래시 숨김 완료');
+                }, 500);
+            }
+        }
+
+        // 배지 클리어 함수 (조용히 실행)
+        function clearNotificationBadge() {
+            console.log('🔔 알림 배지 조용히 클리어');
+            
+            // AndroidBridge를 통한 배지 클리어만 실행 (토스트/진동 없음)
+            if (window.AndroidBridge && typeof window.AndroidBridge.clearNotificationBadge === 'function') {
+                window.AndroidBridge.clearNotificationBadge();
+                console.log('✅ Android 배지 조용히 클리어 완료');
+            }
+            
+            // 앱이 포그라운드로 올 때도 클리어
+            if (window.AndroidBridge && typeof window.AndroidBridge.onAppForeground === 'function') {
+                window.AndroidBridge.onAppForeground();
+                console.log('✅ 앱 포그라운드 배지 조용히 클리어 완료');
+            }
+        }
+
+        // 페이지 로드 시 배지 자동 클리어
+        window.addEventListener('load', () => {
+            setTimeout(clearNotificationBadge, 1000); // 1초 후 자동 클리어
+        });
+
+        // 포커스 시 배지 클리어  
+        window.addEventListener('focus', clearNotificationBadge);
+
+        // 앱 시작
+        initializeApp();
+    </script>
+
+    <div id="app" class="container">
+        <!-- 로그인/회원가입 화면 -->
+        <div id="auth-container" class="hidden">
+            <div style="background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 32px;">
+                
+                <!-- 로고 영역 -->
+                <div style="width: 120px; height: 120px; background: white; border-radius: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 32px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                    <div style="font-size: 60px; color: #74c0fc;">❤️</div>
+                </div>
+                
+                <!-- 앱 이름 -->
+                <div style="font-size: 32px; font-weight: bold; color: white; margin-bottom: 8px;">lonely-care</div>
+                
+                <!-- 부제목 -->
+                <div style="font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 64px;">소중한 사람과 연결되어 안전하게</div>
+                
+                <!-- 로그인 카드 -->
+                <div style="background: white; border-radius: 16px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 320px;">
+                    <div style="font-size: 24px; font-weight: bold; color: #74c0fc; text-align: center; margin-bottom: 24px;">로그인</div>
+                    
+                    <div style="text-align: center; font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 32px;">
+                        lonely-care에 오신 것을 환영합니다!<br>카카오 계정으로 간편하게 로그인하세요.
+                    </div>
+                    
+                    <button id="kakao-login-btn" class="kakao-login-btn">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%233C1E1E' d='M10 2C5.6 2 2 5.1 2 8.9c0 2.4 1.4 4.5 3.6 5.7l-.8 2.9c-.1.3.2.5.5.4l3.2-2.1c.5.1 1 .1 1.5.1 4.4 0 8-3.1 8-6.9S14.4 2 10 2z'/%3E%3C/svg%3E" alt="카카오">
+                        <span id="login-btn-text">카카오 로그인</span>
+                        <div id="login-progress" style="display: none;">
+                            <div class="login-spinner"></div>
+                            <span id="login-status">로그인 중...</span>
+                        </div>
+                        <div id="login-progress-bar" style="display: none; width: 100%; height: 3px; background: rgba(255,255,255,0.3); margin-top: 8px; border-radius: 2px; overflow: hidden;">
+                            <div id="login-progress-fill" style="width: 0%; height: 100%; background: #FFFFFF; border-radius: 2px; transition: width 0.3s ease;"></div>
+                        </div>
+                    </button>
+                    
+                    <!-- 🧪 개발/테스트용 로그인 버튼들 -->
+                </div>
+                
+                <!-- 개인정보 처리방침 -->
+                <div style="text-align: center; font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.4; margin-top: 32px; max-width: 320px;">
+                    로그인하면 개인정보 처리방침 및<br>서비스 이용약관에 동의하는 것으로 간주됩니다.
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- 메인 앱 화면 (로그인 후 표시) -->
+        <div id="main-app" class="hidden">
+            
+            <nav class="bottom-nav" id="bottom-nav">
+                <button id="nav-friends" class="nav-item active">
+                    <div class="nav-icon">👥</div>
+                    <div class="nav-text">친구 관리</div>
+                </button>
+                <button id="nav-status" class="nav-item">
+                    <div class="nav-icon">📊</div>
+                    <div class="nav-text">친구 상태</div>
+                </button>
+                <button id="nav-ads" class="nav-item">
+                    <div class="nav-icon">📢</div>
+                    <div class="nav-text">광고 배너</div>
+                </button>
+                <button id="nav-notifications" class="nav-item">
+                    <div class="nav-icon">🔔</div>
+                    <div class="nav-text">알림 설정</div>
+                </button>
+                <button id="nav-profile" class="nav-item">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-text">프로필 설정</div>
+                </button>
+            </nav>
+
+            <main class="app-content">
+                <!-- 친구 관리 페이지 -->
+                <div id="friends-page" class="page active">
+                    <div class="header">
+                        <div class="logo">친구 관리</div>
+                        <div class="tagline">초대코드를 통해 친구와 안전 네트워크를 구성하세요</div>
+                    </div>
+
+                    <!-- 현재 등록된 친구 목록 -->
+                    <div id="current-friends-list" class="profile-section friend-list">
+                        <h3>👥 친구 목록</h3>
+                        <p style="font-size: 14px; color: #666; margin-bottom: 20px;">등록된 친구들의 현황을 확인하고 관리하세요</p>
+                        
+                        <!-- 🚨 생명구조 앱: 깜빡임 방지 스피너 컨테이너 -->
+                        <div id="friends-loading-container" style="background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%); padding: 40px; border: 2px solid #cce6ff; border-radius: 12px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 20px rgba(102, 179, 255, 0.15);">
+                            <!-- 🔄 안정적인 로딩 스피너 -->
+                            <div class="stable-loading-spinner">
+                                <div style="font-size: 48px; margin-bottom: 20px; animation: smoothSpin 2s linear infinite; color: #66b3ff;">⟳</div>
+                                <div style="font-size: 18px; font-weight: 600; color: #2563eb; margin-bottom: 8px;">친구 목록 불러오는 중</div>
+                                <div style="font-size: 14px; color: #64748b;">생명을 구하는 시스템을 준비하고 있습니다...</div>
+                            </div>
+                            
+                            <style>
+                            @keyframes smoothSpin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                            </style>
+                        </div>
+                    </div>
+
+                    <!-- 친구 관리 통합 섹션 -->
+                    <div class="profile-section">
+                        <h3>🤝 친구 관리</h3>
+                        <p style="font-size: 14px; color: #666; margin-bottom: 20px;">초대코드를 통해 친구와 안전 네트워크를 구성하세요</p>
+                        
+                        <!-- 나의 초대코드 -->
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #e9ecef;">
+                            <h4 style="margin: 0 0 10px 0; font-size: 16px; color: #333;">🎟️ 나의 초대코드</h4>
+                            <p style="font-size: 13px; color: #666; margin-bottom: 12px;">친구에게 이 코드를 공유하여 안심케어 친구로 초대하세요</p>
+                            
+                            <div class="invite-code-container">
+                                <div class="invite-code-display">
+                                    <input type="text" id="my-invite-code" readonly placeholder="코드 생성 중...">
+                                    <button id="copy-code-btn" class="btn-copy">📋 복사</button>
+                                </div>
+                                <button id="generate-code-btn" class="btn btn-secondary" style="margin-top: 10px;">🔄 새 코드 생성</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 친구 초대코드 입력 -->
+                        <div style="background: #fff; padding: 15px; border: 2px solid #e9ecef; border-radius: 8px; margin-bottom: 20px;">
+                            <h4 style="margin: 0 0 10px 0; font-size: 16px; color: #333;">➕ 친구 추가</h4>
+                            <p style="font-size: 13px; color: #666; margin-bottom: 12px;">친구로부터 받은 초대코드를 입력하세요</p>
+                            
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <input type="text" id="friend-invite-code" placeholder="초대코드를 입력하세요 (예: ABC123)" style="margin-bottom: 10px;">
+                                <button id="add-friend-btn" class="btn">👥 친구 추가</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 친구 상태 페이지 -->
+                <div id="status-page" class="page">
+                    <div class="header">
+                        <div class="logo">친구 상태</div>
+                        <div class="tagline">친구들의 실시간 안전 상태를 확인하세요</div>
+                    </div>
+
+                    <!-- 상태 안내 -->
+                    <div class="emergency-info">
+                        <strong>🚨 상태 안내</strong>
+                        <div style="margin-top: 8px; font-size: 14px;">
+                            <div>🟢 정상: <span id="normal-time-display">24시간</span> 이내 활동</div>
+                            <div style="color: #ffc107;">🟡 주의: <span id="warning-time-display">24시간</span> 무응답</div>
+                            <div style="color: #fd7e14;">🟠 경고: <span id="danger-time-display">48시간</span> 무응답</div>
+                            <div style="color: #dc3545;">🔴 위험: <span id="emergency-time-display">72시간</span> 무응답</div>
+                        </div>
+                    </div>
+
+                    <!-- 상태별 필터 탭 (☶ 모양 레이아웃) -->
+                    <div class="status-filter-tabs">
+                        <!-- 전체 버튼 - 위쪽에 길게 -->
+                        <button class="status-tab active" data-status="all">
+                            📊 전체 <span id="count-all" class="status-count">0</span>
+                        </button>
+                        
+                        <!-- 나머지 4개 버튼 - 아래쪽에 같은 크기로 -->
+                        <div class="status-tabs-row">
+                            <button class="status-tab" data-status="normal">
+                                🟢 정상 <span id="count-normal" class="status-count">0</span>
+                            </button>
+                            <button class="status-tab" data-status="warning">
+                                🟡 주의 <span id="count-warning" class="status-count">0</span>
+                            </button>
+                            <button class="status-tab" data-status="danger">
+                                🟠 경고 <span id="count-danger" class="status-count">0</span>
+                            </button>
+                            <button class="status-tab" data-status="emergency">
+                                🔴 위험 <span id="count-emergency" class="status-count">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <!-- 친구 상태 목록 -->
+                    <div id="friends-status-container">
+                        <div id="friends-status">
+                            <p style="text-align: center; color: #999; padding: 40px;">등록된 친구가 없습니다.<br>친구 관리에서 친구를 추가해주세요.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 광고 배너 페이지 -->
+                <div id="ads-page" class="page">
+                    <div class="header">
+                        <div class="logo">광고 배너</div>
+                        <div class="tagline">생활에 도움이 되는 서비스를 확인해보세요</div>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab active" data-tab="insurance">보험</button>
+                        <button class="tab" data-tab="funeral">상조</button>
+                        <button class="tab" data-tab="lawyer">변호사</button>
+                    </div>
+                    <div id="ad-content" class="ad-content">
+                        <div class="ad-empty-container">
+                            <div class="ad-empty-icon">📭</div>
+                            <div class="ad-empty-title">등록된 광고가 없습니다</div>
+                            <div class="ad-empty-description">관리자 페이지에서 광고를 추가해주세요</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 알림 설정 페이지 -->
+                <div id="notifications-page" class="page">
+                    <div class="header">
+                        <div class="logo">알림 설정</div>
+                        <div class="tagline">필요한 알림만 선택하여 받으세요</div>
+                    </div>
+
+                    <div class="notification-settings-main-container">
+                        <div class="notification-settings-header">
+                            <h3 class="notification-settings-title">📳 알림 설정</h3>
+                        </div>
+                        
+                        <div class="notification-setting">
+                            <div class="setting-info">
+                                <div class="setting-title">푸시 알림 허용</div>
+                                <div class="setting-description">앱의 모든 알림을 받습니다</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="push-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-setting">
+                            <div class="setting-info">
+                                <div class="setting-title">친구 상태 알림</div>
+                                <div class="setting-description">친구들의 활동 상태 변화를 알림</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="friend-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-setting">
+                            <div class="setting-info">
+                                <div class="setting-title">주의 알림 (<span id="warning-setting-time">24시간</span> 무응답)</div>
+                                <div class="setting-description">친구가 설정된 시간 동안 응답하지 않을 때</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="warning-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-setting">
+                            <div class="setting-info">
+                                <div class="setting-title">경고 알림 (<span id="danger-setting-time">48시간</span> 무응답)</div>
+                                <div class="setting-description">친구가 설정된 시간 동안 응답하지 않을 때</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="danger-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-setting">
+                            <div class="setting-info">
+                                <div class="setting-title">위험 알림 (<span id="emergency-setting-time">72시간</span> 무응답)</div>
+                                <div class="setting-description">친구가 설정된 시간 동안 응답하지 않을 때</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="emergency-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-setting emergency-consent-setting">
+                            <div class="setting-info">
+                                <div class="setting-title">🚨 긴급상황 자동 신고 동의</div>
+                                <div class="setting-description">72시간 무응답 시 119에 자동 신고합니다</div>
+                                <div class="emergency-warning">
+                                    ⚠️ 생명 구조를 위한 필수 기능입니다. 동의하지 않으면 고독사 예방 효과가 제한됩니다.
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="emergency-contact-consent" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-save-button">
+                            <button class="btn-save" id="save-notification-settings">설정 저장</button>
+                        </div>
+                    </div>
+
+
+                    <div class="recent-notifications-container">
+                        <div class="recent-notifications-header">
+                            <h3 class="recent-notifications-title">📋 최근 알림</h3>
+                        </div>
+                        <div class="recent-notifications-empty">
+                            <span class="empty-icon">📭</span>
+                            <p class="empty-message">최근 알림이 없습니다</p>
+                            <p class="empty-description">새로운 알림이 도착하면 여기에 표시됩니다</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 프로필 설정 페이지 -->
+                <div id="profile-page" class="page">
+                    <div class="header">
+                        <div class="logo">프로필 설정</div>
+                        <div class="tagline">응급상황 시 신속한 대응을 위해 상세 정보를 입력해주세요</div>
+                    </div>
+
+                    <div class="emergency-info">
+                        <strong>⚠️ 중요 안내</strong>
+                        <div style="margin-top: 8px; font-size: 14px; line-height: 1.5;">
+                            응급상황 시 국가기관(119)에 신속히<br>
+                            정보를 제공하기 위해 가능한 상세하게<br>
+                            정보를 입력해주세요.
+                        </div>
+                    </div>
+
+                    <form id="profile-form">
+                        <!-- 기본 정보 -->
+                        <div class="profile-section">
+                            <h3>👤 기본 정보</h3>
+                            
+                            <!-- 프로필 사진 -->
+                            <div class="form-group">
+                                <label>프로필 사진</label>
+                                <div style="text-align: center; margin: 15px 0; display: flex; flex-direction: column; align-items: center;">
+                                    <img id="profile-pic-preview" src="" alt="프로필 사진" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ddd; object-fit: cover; display: none; margin: 0 auto;">
+                                    <div id="profile-pic-placeholder" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ddd; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #999; font-size: 14px;">사진 없음</div>
+                                </div>
+                                <div class="file-upload" onclick="document.getElementById('profile-photo-input').click()" style="margin-top: 10px;">
+                                    📷 프로필 사진 업로드
+                                </div>
+                                <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
+                                <p style="font-size: 12px; color: #999; text-align: center; margin: 5px 0 0 0;">카카오 프로필 사진 또는 새 사진을 업로드할 수 있습니다</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-name">이름 *</label>
+                                <input type="text" id="profile-name" placeholder="실명을 입력하세요" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-phone">전화번호 *</label>
+                                <input type="tel" id="profile-phone" placeholder="010-0000-0000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-birth">생년월일</label>
+                                <input type="date" id="profile-birth">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-gender">성별</label>
+                                <select id="profile-gender">
+                                    <option value="">선택하세요</option>
+                                    <option value="male">남성</option>
+                                    <option value="female">여성</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 거주지 정보 -->
+                        <div class="profile-section">
+                            <h3>🏠 거주지 정보</h3>
+                            <div class="form-group">
+                                <label for="profile-address">주소 *</label>
+                                <input type="text" id="profile-address" placeholder="시/도, 구/군을 포함한 주소" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-detail-address">상세주소</label>
+                                <input type="text" id="profile-detail-address" placeholder="동/호수, 건물명 등">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-postal">우편번호</label>
+                                <input type="text" id="profile-postal" placeholder="12345">
+                            </div>
+                        </div>
+
+                        <!-- 비상 연락처 -->
+                        <div class="profile-section">
+                            <h3>📞 비상 연락처</h3>
+                            <div class="form-group">
+                                <label for="emergency-contact1">비상연락처 1 (가족)</label>
+                                <input type="tel" id="emergency-contact1" placeholder="010-0000-0000">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-name1">관계</label>
+                                <input type="text" id="emergency-name1" placeholder="예: 부모님, 형제자매">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-contact2">비상연락처 2</label>
+                                <input type="tel" id="emergency-contact2" placeholder="010-0000-0000">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-name2">관계</label>
+                                <input type="text" id="emergency-name2" placeholder="예: 친구, 동료">
+                            </div>
+                        </div>
+
+                        <!-- 의료 정보 -->
+                        <div class="profile-section">
+                            <h3>🏥 의료 정보</h3>
+                            <div class="form-group">
+                                <label for="blood-type">혈액형</label>
+                                <select id="blood-type">
+                                    <option value="">선택하세요</option>
+                                    <option value="A+">A형 Rh+</option>
+                                    <option value="A-">A형 Rh-</option>
+                                    <option value="B+">B형 Rh+</option>
+                                    <option value="B-">B형 Rh-</option>
+                                    <option value="AB+">AB형 Rh+</option>
+                                    <option value="AB-">AB형 Rh-</option>
+                                    <option value="O+">O형 Rh+</option>
+                                    <option value="O-">O형 Rh-</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="medical-conditions">지병/복용약물</label>
+                                <textarea id="medical-conditions" rows="3" placeholder="당뇨, 고혈압 등 지병이나 정기 복용 약물이 있다면 입력하세요"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="allergies">알레르기</label>
+                                <input type="text" id="allergies" placeholder="약물/음식 알레르기가 있다면 입력하세요">
+                            </div>
+                        </div>
+
+                        <!-- 기타 정보 -->
+                        <div class="profile-section">
+                            <h3>📋 기타 정보</h3>
+                            <div class="form-group">
+                                <label for="workplace">직장/학교</label>
+                                <input type="text" id="workplace" placeholder="직장이나 학교명을 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <label for="special-notes">특이사항</label>
+                                <textarea id="special-notes" rows="3" placeholder="응급상황 시 알아야 할 특별한 사항이 있다면 입력하세요"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 영정사진 (선택사항) -->
+                        <div class="profile-section">
+                            <h3>🖼️ 영정사진 (선택사항)</h3>
+                            <div class="form-group">
+                                <label>영정사진 업로드</label>
+                                <div style="text-align: center; margin: 15px 0; display: flex; flex-direction: column; align-items: center;">
+                                    <img id="memorial-pic-preview" src="" alt="영정사진" style="width: 120px; height: 120px; border: 2px solid #ddd; object-fit: cover; border-radius: 8px; display: none; margin: 0 auto;">
+                                    <div id="memorial-pic-placeholder" style="width: 120px; height: 120px; border: 2px solid #ddd; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #999; font-size: 14px; border-radius: 8px;">사진 없음</div>
+                                </div>
+                                <div class="file-upload" onclick="document.getElementById('memorial-photo-input').click()">
+                                    📷 영정사진 업로드
+                                </div>
+                                <input type="file" id="memorial-photo-input" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+
+
+                        <!-- 💳 구독 관리 섹션 -->
+                        <div class="profile-section">
+                            <h3>💳 구독 관리</h3>
+                            <div id="subscription-management-container">
+                                <div class="current-subscription">
+                                    <h4>현재 플랜: <span id="current-plan-name">무료 플랜</span></h4>
+                                    <div class="subscription-details">
+                                        <p id="subscription-details-text">친구 1명까지 모니터링 가능</p>
+                                        <p id="subscription-expiry" style="display: none;">만료일: <span id="expiry-date"></span></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="subscription-actions">
+                                    <button id="basic-upgrade-btn" class="btn subscription-btn" style="background: #17a2b8; color: white;">
+                                        🚀 베이직 플랜 업그레이드 (월 2,000원)
+                                    </button>
+                                    <button id="premium-upgrade-btn" class="btn subscription-btn" style="background: #ffc107; color: #000;">
+                                        ⭐ 프리미엄 플랜 업그레이드 (월 5,000원)
+                                    </button>
+                                    <button id="auto-renew-toggle-btn" class="btn subscription-btn" style="background: #28a745; color: white; display: none;">
+                                        🔄 자동갱신 설정
+                                    </button>
+                                    <button id="cancel-subscription-btn" class="btn subscription-btn" style="background: #dc3545; color: white; display: none;">
+                                        🚫 구독 해지
+                                    </button>
+                                    <button id="manage-subscription-btn" class="btn subscription-btn" style="background: #6c757d; color: white;">
+                                        ⚙️ 구독 관리
+                                    </button>
+                                </div>
+                                
+                                <div class="plan-comparison" style="margin-top: 20px;">
+                                    <h4>플랜 비교</h4>
+                                    <div class="plans-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 10px;">
+                                        <div class="plan-card" style="border: 2px solid #ddd; padding: 15px; border-radius: 8px; text-align: center;">
+                                            <h5>무료 플랜</h5>
+                                            <p class="price">0원/월</p>
+                                            <ul style="list-style: none; padding: 0; font-size: 14px;">
+                                                <li>✓ 친구 1명 모니터링</li>
+                                                <li>✓ 기본 알림</li>
+                                                <li>✓ 24/48/72시간 알림</li>
+                                            </ul>
+                                        </div>
+                                        <div class="plan-card" style="border: 2px solid #17a2b8; padding: 15px; border-radius: 8px; text-align: center;">
+                                            <h5>베이직 플랜</h5>
+                                            <p class="price">2,000원/월</p>
+                                            <ul style="list-style: none; padding: 0; font-size: 14px;">
+                                                <li>✓ 친구 3명 모니터링</li>
+                                                <li>✓ 우선순위 알림</li>
+                                                <li>✓ 상세 상태 리포트</li>
+                                                <li>✓ 이메일/SMS 알림</li>
+                                            </ul>
+                                        </div>
+                                        <div class="plan-card" style="border: 2px solid #ffc107; padding: 15px; border-radius: 8px; text-align: center;">
+                                            <h5>프리미엄 플랜</h5>
+                                            <p class="price">5,000원/월</p>
+                                            <ul style="list-style: none; padding: 0; font-size: 14px;">
+                                                <li>✓ 친구 10명 모니터링</li>
+                                                <li>✓ 최우선 알림</li>
+                                                <li>✓ 상세 분석 리포트</li>
+                                                <li>✓ 모든 알림 채널</li>
+                                                <li>✓ 가족 공유 기능</li>
+                                                <li>✓ 응급 연락망 자동 연결</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn" style="margin-top: 30px;">프로필 저장</button>
+                        <button type="button" class="btn btn-danger" id="logout-profile-btn" style="margin-top: 10px; margin-bottom: 20px;">로그아웃</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 카카오 로그인 초기화 -->
+    <script>
+        // Firebase 기반으로 완전 전환 - Supabase 완전 제거
+
+        // 🔒 보안 강화된 카카오 SDK 초기화 (환경변수 사용)
+        if (typeof Kakao !== 'undefined') {
+            try {
+                // 환경변수에서 카카오 키 가져오기 (보안 강화)
+                const kakaoKey = window.ENV_KAKAO_JAVASCRIPT_KEY || 
+                                (window.getSecureEnv && window.getSecureEnv().getConfig('kakao.javascriptKey')) ||
+                                'dd74fd58abbb75eb58df11ecc92d6727'; // fallback (호환성)
+                
+                console.log('🔒 카카오 키 로드:', kakaoKey ? '✅ 환경변수에서 로드됨' : '⚠️ fallback 키 사용');
+                
+                Kakao.init(kakaoKey);
+                console.log('✅ 보안 강화된 Kakao SDK 초기화 완료');
+            } catch (error) {
+                console.error('❌ Kakao SDK 초기화 실패:', error);
+                // 생명구조 앱이므로 fallback 시도
+                try {
+                    Kakao.init('dd74fd58abbb75eb58df11ecc92d6727');
+                    console.warn('⚠️ Fallback 카카오 키로 초기화 성공');
+                } catch (fallbackError) {
+                    console.error('❌ Fallback 초기화도 실패:', fallbackError);
+                }
+            }
+        }
+
+        // 로그인 진행 상황 업데이트 함수
+        function updateLoginProgress(step, progress = 0, message = '') {
+            const btnText = document.getElementById('login-btn-text');
+            const loginProgress = document.getElementById('login-progress');
+            const loginStatus = document.getElementById('login-status');
+            const progressBar = document.getElementById('login-progress-bar');
+            const progressFill = document.getElementById('login-progress-fill');
+            const kakaoBtn = document.getElementById('kakao-login-btn');
+            
+            if (!btnText || !loginProgress || !loginStatus || !progressBar || !progressFill || !kakaoBtn) return;
+
+            switch(step) {
+                case 'start':
+                    kakaoBtn.disabled = true;
+                    btnText.style.display = 'none';
+                    loginProgress.style.display = 'flex';
+                    progressBar.style.display = 'block';
+                    loginStatus.textContent = '카카오 SDK 확인 중...';
+                    progressFill.style.width = '10%';
+                    break;
+                    
+                case 'sdk-check':
+                    loginStatus.textContent = '카카오 SDK 로딩 중...';
+                    progressFill.style.width = '25%';
+                    break;
+                    
+                case 'native-check':
+                    loginStatus.textContent = '카카오톡 앱 확인 중...';
+                    progressFill.style.width = '50%';
+                    break;
+                    
+                case 'login-attempt':
+                    loginStatus.textContent = '카카오 로그인 시도 중...';
+                    progressFill.style.width = '75%';
+                    break;
+                    
+                case 'web-fallback':
+                    loginStatus.textContent = '웹 로그인으로 전환 중...';
+                    progressFill.style.width = '85%';
+                    break;
+                    
+                case 'success':
+                    loginStatus.textContent = '로그인 성공! 메인 화면으로 이동 중...';
+                    progressFill.style.width = '100%';
+                    break;
+                    
+                case 'error':
+                    kakaoBtn.disabled = false;
+                    btnText.style.display = 'inline';
+                    loginProgress.style.display = 'none';
+                    progressBar.style.display = 'none';
+                    progressFill.style.width = '0%';
+                    break;
+                    
+                case 'custom':
+                    loginStatus.textContent = message;
+                    progressFill.style.width = progress + '%';
+                    break;
+            }
+            
+            console.log(`🔄 로그인 진행: ${step} - ${message || loginStatus.textContent} (${progress}%)`);
+        }
+
+        // 카카오 로그인 함수 (중복 방지 강화)
+        async function performKakaoLogin() {
+            console.log('🔐 카카오 로그인 시도 시작...');
+            
+            // 이미 성공한 경우 중복 로그인 방지
+            if (window._kakaoLoginSuccess || window._kakaoLoginProcessing) {
+                console.log('⚠️ 이미 로그인 처리 중이거나 성공함 - 중복 방지');
+                return;
+            }
+            
+            // 버튼 비활성화만 즉시 처리
+            const kakaoBtn = document.getElementById('kakao-login-btn');
+            if (kakaoBtn) kakaoBtn.disabled = true;
+            
+            try {
+                // 🚨 생명구조 앱 최적화: 즉시 로그인 시도
+                if (window.kakaoAuthStandalone && typeof window.kakaoAuthStandalone.login === 'function') {
+                    console.log('✅ kakao-auth-standalone 사용 - 즉시 실행');
+                    const result = await window.kakaoAuthStandalone.login();
+                    console.log('✅ 카카오 로그인 성공:', result);
+                    
+                } else if (window.Kakao && window.Kakao.Auth) {
+                    // Kakao SDK 직접 사용 (백업)
+                    console.log('✅ Kakao SDK 직접 사용');
+                    
+                    await new Promise((resolve, reject) => {
+                        window.Kakao.Auth.login({
+                            success: function(authObj) {
+                                console.log('✅ 카카오 로그인 성공');
+                                window.Kakao.API.request({
+                                    url: '/v2/user/me',
+                                    success: function(res) {
+                                        const userInfo = {
+                                            id: res.id,
+                                            kakao_id: res.id,
+                                            name: res.properties?.nickname || '사용자',
+                                            email: res.kakao_account?.email || `${res.id}@kakao.com`,
+                                            profile_image: res.properties?.profile_image || ''
+                                        };
+                                        localStorage.setItem('currentUser', JSON.stringify(userInfo));
+                                        localStorage.setItem('isLoggedIn', 'true');
+                                        window.location.reload();
+                                        resolve(userInfo);
+                                    },
+                                    fail: reject
+                                });
+                            },
+                            fail: reject
+                        });
+                    });
+                    
+                } else {
+                    // OAuth 리다이렉트 방식 (최후의 수단)
+                    console.log('⚠️ OAuth 리다이렉트 방식 사용');
+                    const CLIENT_ID = 'dd74fd58abbb75eb58df11ecc92d6727';
+                    const REDIRECT_URI = window.location.origin + '/oauth.html';
+                    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+                    window.location.href = kakaoAuthUrl;
+                }
+            } catch (error) {
+                console.error('❌ 카카오 로그인 실패:', error);
+                if (kakaoBtn) kakaoBtn.disabled = false;
+                alert('카카오 로그인에 실패했습니다. 다시 시도해주세요.');
+            }
+        }
+
+        // Android 네이티브 카카오 로그인 성공 콜백
+        window.onKakaoLoginSuccess = function(userInfo) {
+            console.log('Native login success');
+            
+            // 타임아웃 해제
+            if (window._kakaoNativeLoginTimeout) {
+                clearTimeout(window._kakaoNativeLoginTimeout);
+                window._kakaoNativeLoginTimeout = null;
+            }
+            
+            // 기타 타임아웃들 해제 (ES5 방식)
+            if (window._kakaoLoginTimeout) {
+                clearTimeout(window._kakaoLoginTimeout);
+                window._kakaoLoginTimeout = null;
+            }
+            if (window._kakaoRetryTimeout) {
+                clearTimeout(window._kakaoRetryTimeout);
+                window._kakaoRetryTimeout = null;
+            }
+            if (window._authTimeout) {
+                clearTimeout(window._authTimeout);
+                window._authTimeout = null;
+            }
+            
+            // 중복 처리 방지
+            if (window._kakaoLoginProcessing) {
+                console.log('Already processing');
+                return;
+            }
+            window._kakaoLoginProcessing = true;
+            
+            // 사용자 정보 저장
+            if (userInfo && userInfo.kakao_id) {
+                localStorage.setItem('currentUser', JSON.stringify(userInfo));
+                localStorage.setItem('isLoggedIn', 'true');
+                console.log('Saved to storage');
+                
+                // 페이지 새로고침
+                setTimeout(function() {
+                    window.location.reload();
+                }, 300);
+            } else {
+                console.error('Invalid user info');
+                window._kakaoLoginProcessing = false;
+            }
+        };
+        
+        // Android 네이티브 카카오 로그인 오류 콜백
+        window.onKakaoLoginError = function(errorMessage) {
+            console.error('❌ Android 네이티브 카카오 로그인 오류:', errorMessage);
+            
+            // 버튼 다시 활성화
+            const kakaoBtn = document.getElementById('kakao-login-btn');
+            if (kakaoBtn) kakaoBtn.disabled = false;
+            
+            // 사용자에게 알림
+            if (!errorMessage.includes('cancelled') && !errorMessage.includes('취소')) {
+                alert('카카오 로그인에 실패했습니다. 다시 시도해주세요.');
+            }
+        };
+
+        // 긴급 로그인 옵션 표시
+        function showEmergencyLoginOption() {
+            console.log('🚨 긴급 로그인 옵션 표시');
+            
+            // 즉시 긴급 로그인 활성화 (생명 구조 우선)
+            if (window.emergencyLogin && typeof window.emergencyLogin.activate === 'function') {
+                console.log('🚨 생명 구조 우선 - 긴급 로그인 즉시 활성화');
+                window.emergencyLogin.activate();
+            } else {
+                console.error('❌ 긴급 로그인 시스템을 찾을 수 없습니다');
+                // 직접 긴급 로그인 UI 생성
+                createEmergencyLoginDirectly();
+            }
+        }
+
+        // 직접 긴급 로그인 UI 생성 (백업 방법)
+        function createEmergencyLoginDirectly() {
+            console.log('🚨 직접 긴급 로그인 UI 생성');
+            
+            const emergencyContainer = document.createElement('div');
+            emergencyContainer.id = 'emergency-login-container-direct';
+            emergencyContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            `;
+
+            emergencyContainer.innerHTML = `
+                <div style="
+                    background: white;
+                    padding: 40px;
+                    border-radius: 20px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    max-width: 400px;
+                    width: 90%;
+                    text-align: center;
+                ">
+                    <div style="
+                        background: #FF6B6B;
+                        color: white;
+                        padding: 15px;
+                        border-radius: 10px;
+                        margin-bottom: 20px;
+                        font-weight: bold;
+                        font-size: 16px;
+                    ">
+                        🚨 생명 구조 긴급 접근
+                    </div>
+                    
+                    <h2 style="
+                        color: #2C3E50;
+                        margin-bottom: 10px;
+                        font-size: 24px;
+                    ">Lonely Care</h2>
+                    
+                    <p style="
+                        color: #7F8C8D;
+                        margin-bottom: 30px;
+                        line-height: 1.6;
+                        font-size: 14px;
+                    ">
+                        카카오 로그인에 문제가 있어 긴급 접근 모드를 활성화합니다.<br>
+                        <strong style="color: #E74C3C;">생명을 구하는 서비스이므로 즉시 접근이 가능합니다.</strong>
+                    </p>
+
+                    <form id="emergency-login-form-direct">
+                        <input 
+                            type="text" 
+                            id="emergency-name-direct" 
+                            placeholder="이름을 입력하세요"
+                            required
+                            style="
+                                width: 100%;
+                                padding: 15px;
+                                border: 2px solid #E0E0E0;
+                                border-radius: 10px;
+                                font-size: 16px;
+                                margin-bottom: 15px;
+                                box-sizing: border-box;
+                            "
+                        />
+                        
+                        <input 
+                            type="tel" 
+                            id="emergency-phone-direct" 
+                            placeholder="전화번호 (010-1234-5678)"
+                            required
+                            style="
+                                width: 100%;
+                                padding: 15px;
+                                border: 2px solid #E0E0E0;
+                                border-radius: 10px;
+                                font-size: 16px;
+                                margin-bottom: 20px;
+                                box-sizing: border-box;
+                            "
+                        />
+
+                        <button 
+                            type="submit"
+                            style="
+                                width: 100%;
+                                padding: 15px;
+                                background: #27AE60;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-size: 18px;
+                                font-weight: bold;
+                                cursor: pointer;
+                            "
+                        >
+                            🛡️ 생명 구조 서비스 즉시 접속
+                        </button>
+                    </form>
+                </div>
+            `;
+
+            document.body.appendChild(emergencyContainer);
+
+            // 폼 이벤트 리스너 추가
+            const form = document.getElementById('emergency-login-form-direct');
+            form.addEventListener('submit', handleDirectEmergencyLogin);
+        }
+
+        // 직접 긴급 로그인 처리
+        async function handleDirectEmergencyLogin(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('emergency-name-direct').value.trim();
+            const phone = document.getElementById('emergency-phone-direct').value.trim();
+
+            if (!name || !phone) {
+                alert('이름과 전화번호를 모두 입력해주세요.');
+                return;
+            }
+
+            console.log('🚨 직접 긴급 로그인 처리:', { name, phone });
+
+            try {
+                // 임시 사용자 ID 생성
+                const emergencyUserId = 'emergency_' + phone.replace(/[^0-9]/g, '');
+                
+                // 사용자 정보 생성
+                const emergencyUserInfo = {
+                    id: emergencyUserId,
+                    name: name,
+                    nickname: name,
+                    phone: phone,
+                    provider: 'emergency',
+                    is_emergency_user: true,
+                    emergency_contact1: phone,
+                    emergency_name1: name,
+                    created_at: new Date().toISOString(),
+                    profile_image: '',
+                    email: `${emergencyUserId}@emergency.lonely-care.com`
+                };
+
+                // 로컬 스토리지에 저장
+                localStorage.setItem('currentUser', JSON.stringify(emergencyUserInfo));
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('isEmergencyLogin', 'true');
+
+                console.log('✅ 긴급 로그인 완료 - 페이지 새로고침');
+                
+                // 성공 메시지 표시 후 새로고침
+                alert(`환영합니다, ${name}님!\nLonely Care 생명안전 서비스에 접속되었습니다.`);
+                window.location.reload();
+
+            } catch (error) {
+                console.error('❌ 직접 긴급 로그인 처리 오류:', error);
+                alert('긴급 로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        }
+
+        // 페이지 전환 함수
+        function showPage(pageId) {
+            console.log('🔄 페이지 전환:', pageId);
+            
+            // 모든 페이지 숨기기
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+                page.style.display = 'none';
+            });
+
+            // 선택된 페이지 표시
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                targetPage.style.display = 'block';
+                console.log('✅ 페이지 표시:', pageId);
+            } else {
+                console.error('❌ 페이지를 찾을 수 없음:', pageId);
+            }
+
+            // 네비게이션 버튼 상태 업데이트
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const navButton = document.querySelector(`#nav-${pageId.replace('-page', '')}`);
+            if (navButton) {
+                navButton.classList.add('active');
+                console.log('✅ 네비게이션 버튼 활성화:', navButton.id);
+            } else {
+                console.error('❌ 네비게이션 버튼을 찾을 수 없음:', `#nav-${pageId.replace('-page', '')}`);
+            }
+        }
+
+        // DOM 로드 완료 후 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔄 DOM 로드 완료 - 초기화 시작');
+            
+            // Firebase 클라이언트 초기화
+            if (!window.firebaseClient && window.firebaseConfig) {
+                try {
+                    // Firebase 앱 초기화
+                    const firebaseApp = firebase.initializeApp(window.firebaseConfig);
+                    const db = firebase.firestore();
+                    
+                    // 전역 firebaseClient 객체 생성
+                    window.firebaseClient = {
+                        app: firebaseApp,
+                        db: db,
+                        isInitialized: true
+                    };
+                    
+                    console.log('🔥 Firebase 클라이언트 초기화 완료');
+                } catch (error) {
+                    console.error('❌ Firebase 클라이언트 초기화 실패:', error);
+                    window.firebaseClient = {
+                        app: null,
+                        db: null,
+                        isInitialized: false
+                    };
+                }
+            }
+            
+            // 로그인 상태 재확인 - 더 엄격한 검증
+            var savedUser = localStorage.getItem('currentUser');
+            var isLoggedIn = false;
+            
+            if (savedUser) {
+                try {
+                    var userData = JSON.parse(savedUser);
+                    if (userData && userData.id && userData.name && (userData.kakao_id || userData.kakaoId)) {
+                        isLoggedIn = true;
+                    } else {
+                        localStorage.removeItem('currentUser');
+                    }
+                } catch (e) {
+                    localStorage.removeItem('currentUser');
+                }
+            }
+            
+            // 상태에 따른 화면 설정
+            var authContainer = document.getElementById('auth-container');
+            var mainApp = document.getElementById('main-app');
+            var bottomNav = document.getElementById('bottom-nav');
+            
+            console.log('🔍 최종 로그인 상태 판단:', isLoggedIn ? '로그인됨' : '로그아웃됨');
+            
+            if (isLoggedIn) {
+                // 로그인된 상태: 메인 앱 표시
+                if (authContainer) {
+                    authContainer.classList.add('hidden');
+                    authContainer.style.display = 'none';
+                }
+                if (mainApp) {
+                    mainApp.classList.remove('hidden');
+                    mainApp.classList.add('show');
+                    mainApp.style.display = 'block';
+                }
+                if (bottomNav) bottomNav.style.display = 'flex';
+                
+                // 기본 페이지 (친구 관리) 활성화
+                setTimeout(() => {
+                    showPage('friends-page');
+                }, 100);
+                
+                console.log('✅ 메인 앱 표시 완료 - 로그인 상태');
+            } else {
+                // 로그아웃 상태: 로그인 화면 표시
+                if (authContainer) {
+                    authContainer.classList.remove('hidden');
+                    authContainer.style.display = 'block';
+                }
+                if (mainApp) {
+                    mainApp.classList.add('hidden');
+                    mainApp.classList.remove('show');
+                    mainApp.style.display = 'none';
+                }
+                if (bottomNav) bottomNav.style.display = 'none';
+                console.log('✅ 로그인 화면 표시 완료 - 로그아웃 상태');
+            }
+            
+            // 카카오 로그인 버튼
+            const kakaoLoginBtn = document.getElementById('kakao-login-btn');
+            if (kakaoLoginBtn) {
+                kakaoLoginBtn.addEventListener('click', performKakaoLogin);
+            }
+
+            // 네비게이션 버튼들
+            document.getElementById('nav-friends')?.addEventListener('click', () => showPage('friends-page'));
+            document.getElementById('nav-status')?.addEventListener('click', () => showPage('status-page'));
+            document.getElementById('nav-ads')?.addEventListener('click', () => showPage('ads-page'));
+            document.getElementById('nav-notifications')?.addEventListener('click', () => showPage('notifications-page'));
+            document.getElementById('nav-profile')?.addEventListener('click', () => showPage('profile-page'));
+
+            // 로그아웃 버튼
+            document.getElementById('logout-profile-btn')?.addEventListener('click', function() {
+                if (confirm('정말 로그아웃 하시겠습니까?')) {
+                    localStorage.removeItem('currentUser');
+                    window.location.reload();
+                }
+            });
+
+            // 💳 구독 관리 버튼들
+            document.getElementById('basic-upgrade-btn')?.addEventListener('click', function() {
+                if (window.subscriptionManager) {
+                    window.subscriptionManager.startUpgrade('BASIC');
+                } else {
+                    console.error('❌ subscriptionManager가 초기화되지 않았습니다');
+                    alert('구독 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.');
+                }
+            });
+
+            document.getElementById('premium-upgrade-btn')?.addEventListener('click', function() {
+                if (window.subscriptionManager) {
+                    window.subscriptionManager.startUpgrade('PREMIUM');
+                } else {
+                    console.error('❌ subscriptionManager가 초기화되지 않았습니다');
+                    alert('구독 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.');
+                }
+            });
+
+            document.getElementById('auto-renew-toggle-btn')?.addEventListener('click', function() {
+                if (window.subscriptionManager) {
+                    window.subscriptionManager.toggleAutoRenew();
+                } else {
+                    console.error('❌ subscriptionManager가 초기화되지 않았습니다');
+                    alert('구독 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.');
+                }
+            });
+
+            document.getElementById('cancel-subscription-btn')?.addEventListener('click', function() {
+                if (window.subscriptionManager) {
+                    window.subscriptionManager.cancelSubscription();
+                } else {
+                    console.error('❌ subscriptionManager가 초기화되지 않았습니다');
+                    alert('구독 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.');
+                }
+            });
+
+            document.getElementById('manage-subscription-btn')?.addEventListener('click', function() {
+                if (window.subscriptionManager) {
+                    window.subscriptionManager.showSubscriptionManagement();
+                } else {
+                    console.error('❌ subscriptionManager가 초기화되지 않았습니다');
+                    alert('구독 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.');
+                }
+            });
+
+            
+            console.log('✅ DOM 초기화 완료');
+        });
+
+        // 전화번호 자동 포맷팅
+        function formatPhoneNumber(value) {
+            const numbers = value.replace(/[^\d]/g, '');
+            
+            if (numbers.length <= 3) {
+                return numbers;
+            } else if (numbers.length <= 7) {
+                return numbers.slice(0, 3) + '-' + numbers.slice(3);
+            } else if (numbers.length <= 11) {
+                return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7);
+            } else {
+                return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
+            }
+        }
+
+        // 전화번호 필드에 포맷팅 적용
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneFields = ['profile-phone', 'emergency-contact1', 'emergency-contact2'];
+            
+            phoneFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function(e) {
+                        const cursorPosition = e.target.selectionStart;
+                        const oldValue = e.target.value;
+                        const newValue = formatPhoneNumber(oldValue);
+                        
+                        e.target.value = newValue;
+                        
+                        let newCursorPosition = cursorPosition;
+                        if (newValue.length > oldValue.length) {
+                            if (cursorPosition === 4 || cursorPosition === 9) {
+                                newCursorPosition = cursorPosition + 1;
+                            }
+                        }
+                        e.target.setSelectionRange(newCursorPosition, newCursorPosition);
+                    });
+                    
+                    field.addEventListener('paste', function(e) {
+                        setTimeout(() => {
+                            e.target.value = formatPhoneNumber(e.target.value);
+                        }, 0);
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- lonely-care 핵심 JavaScript 파일들 로드 -->
+    <!-- 0. 환경변수 설정 (최우선 로드) -->
+    <script src="js/env-config.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
+    <!-- 1. 기본 설정 및 유틸리티 -->
+    <script src="js/config.js"></script>
+    <script src="js/debug-logger.js"></script>
+    
+    <!-- UserID 유틸리티 (최우선 로드 - 다른 파일들에서 사용) -->
+    <script src="js/user-id-utils.js"></script>
+    
+    <!-- 헬퍼 클래스들 (최우선 로드) -->
+    <script src="js/helpers/error-handler.js"></script>
+    <script src="js/helpers/dom-helper.js"></script>
+    <script src="js/helpers/storage-helper.js"></script>
+    <script src="js/helpers/notification-helper.js"></script>
+    <script src="js/helpers/user-gesture-manager.js"></script>
+    <script src="js/helpers/network-optimizer.js"></script>
+    <script src="js/helpers/image-cache.js"></script>
+    <script src="js/helpers/async-optimizer.js"></script>
+    <script src="js/helpers/network-recovery.js"></script>
+    
+    <!-- HTTPS 및 보안 관리 -->
+    <!-- <script src="js/https-manager.js"></script> 존재하지 않는 파일 -->
+    
+    <!-- Firebase 설정 및 저장소 (순서 중요!) -->
+    <script src="js/firebase-initializer.js"></script>
+    <!-- <script src="js/firebase-connection-monitor.js"></script> 존재하지 않는 파일 -->
+    <script src="js/firebase-client.js"></script>
+    <script src="js/firebase-compat.js"></script>
+    <script src="js/storage.js"></script>
+    
+    <!-- 실시간 상태 관리자 (프라이버시 보호 포함) -->
+    <script src="components/core/RealTimeStatusManager.js"></script>
+    
+    <!-- 2. 인증 시스템 -->
+    <script src="js/auth.js"></script>
+    <script src="js/kakao-auth.js"></script>
+    <script src="js/kakao-auth-standalone.js"></script>
+    
+    <!-- 2-1. 긴급 로그인 시스템 (생명 구조 우선) -->
+    <script src="components/auth/emergency-login.js"></script>
+    
+    <!-- 3-1. 새로운 컴포넌트 시스템 (Firebase 기반) -->
+    <script src="components/auth/KakaoAuthComponent.js"></script>
+    
+    <!-- 3-2. 기능 모듈들 (auth가 초기화된 후) -->
+    <script src="js/friends.js"></script>
+    
+    <!-- 3-2-1. 친구 상태 모니터링 시스템 (모듈화된 버전) -->
+    <script src="js/modules/alert-level-manager.js"></script>
+    <script src="js/modules/notification-threshold-manager.js"></script>
+    <script src="js/modules/friend-status-checker.js"></script>
+    <script src="js/modules/friend-status-ui.js"></script>
+    <script src="js/friend-status-monitor.js"></script>
+    
+    <script src="js/invite-code.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/dynamic-time-display.js"></script>
+    <script src="js/modules/fcm-token-manager-v2.js?v=13.5.1-final-cache-break&t=1730695200"></script>
+    <!-- <script src="js/fcm-manager.js"></script> 파일이 존재하지 않아 주석 처리 -->
+    <script src="js/enhanced-motion-detector.js"></script>
+    <script src="js/motion-detector.js"></script>
+    <script src="js/status.js"></script>
+    
+    <!-- 💳 크로스 플랫폼 결제 시스템 -->
+    <!-- <script src="js/android-billing-handler.js"></script> 존재하지 않는 파일 -->
+    <!-- <script src="js/ios-payment-handler.js"></script> 존재하지 않는 파일 -->
+    <!-- <script src="js/web-payment-handler.js"></script> 존재하지 않는 파일 -->
+    <!-- <script src="js/cross-platform-payment.js"></script> 존재하지 알는 파일 -->
+    <script src="js/subscription-manager.js"></script>
+    
+    <!-- 🛠️ 결제 시스템 문제 수정 -->
+    <!-- <script src="js/payment-fix-initializer.js"></script> 존재하지 않는 파일 -->
+    
+    <!-- 🚨 119 응급신고 API 시스템 -->
+    <!-- <script src="js/api-119-client.js"></script> 존재하지 않는 파일 -->
+    
+    <!-- 4. UI 컴포넌트들 -->
+    <script src="components/ui/AdBannerComponent.js"></script>
+    
+    <!-- 5. 긴급상황 대응 시스템 -->
+    <script src="components/emergency/EmergencyResponseSystem.js"></script>
+    
+    <!-- 6. 메인 앱 (마지막에 로드) -->
+    <script src="js/main.js"></script>
+    
+    <script>
+        // 페이지 로드 완료 후 친구 상태 모니터링 시작
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔄 친구 상태 모니터링 초기화 시작...');
+            
+            // 앱이 완전히 로드되기까지 충분히 기다린 후 데이터 로드
+            setTimeout(() => {
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    console.log('✅ 사용자 로그인 확인됨, 친구 데이터 로드 중...');
+                    
+                    // auth 객체가 초기화되었는지 확인
+                    if (typeof window.auth !== 'undefined' && window.auth) {
+                        console.log('✅ auth 객체 초기화 확인됨');
+                        
+                        // 친구 상태 모니터링 시작
+                        if (window.friendStatusMonitor) {
+                            try {
+                                // 먼저 초기화
+                                if (!window.friendStatusMonitor.isInitialized) {
+                                    console.log('🔄 friendStatusMonitor 초기화 중...');
+                                    window.friendStatusMonitor.init();
+                                }
+                                
+                                // 그 다음 데이터 로드
+                                if (typeof window.friendStatusMonitor.loadFriendsStatus === 'function') {
+                                    window.friendStatusMonitor.loadFriendsStatus();
+                                    console.log('✅ 친구 상태 모니터링 시작됨');
+                                }
+                            } catch (error) {
+                                console.error('❌ 친구 상태 모니터링 시작 실패:', error);
+                            }
+                        } else {
+                            console.error('❌ friendStatusMonitor 객체를 찾을 수 없습니다');
+                        }
+                        
+                        // 친구 목록 로드
+                        if (window.friendManager && typeof window.friendManager.loadFriends === 'function') {
+                            try {
+                                window.friendManager.loadFriends();
+                                console.log('✅ 친구 목록 로드 시작됨');
+                            } catch (error) {
+                                console.error('❌ 친구 목록 로드 실패:', error);
+                            }
+                        }
+                    } else {
+                        console.warn('⚠️ auth 객체가 아직 초기화되지 않음. 재시도하지 않음.');
+                        // 무한 루프 방지 - 재시도하지 않음
+                    }
+                } else {
+                    console.log('ℹ️ 로그인하지 않은 상태입니다');
+                }
+            }, 2000);
+        });
+
+    </script>
+
+    <!-- 🆘 생명구조 시스템 개선사항 - JavaScript 컴포넌트들 -->
+    <script src="components/core/AntiSpoofingManager.js"></script>
+    <script src="components/notifications/EnhancedNotificationManager-v2.js?v=13.5.1-final-cache-break&t=1730695200"></script>
+    <script src="components/ui/FriendCardStyleManager-v2.js?v=13.5.1-final-cache-break&t=1730695200"></script>
+    <script src="components/core/LifeSaverNotificationIntegrator.js"></script>
+    <script src="components/testing/LifeSaverSystemTester.js"></script>
+    <script src="components/LifeSaverMasterInitializer.js"></script>
+    
+    <!-- FCM 백그라운드 알림 테스터 - 개발/테스트용 -->
+    <script src="components/notifications/FCMBackgroundTester.js"></script>
+    
+    <!-- 🧹 생산 환경 정리 스크립트 - 테스트 UI 완전 제거 -->
+    <!-- <script src="js/production-cleanup.js"></script> 존재하지 않는 파일 -->
+    
+    <!-- 🔧 생명구조 앱 디버깅 스크립트 - 친구 로딩 문제 진단 -->
+    <!-- <script src="debug-friends-loading.js"></script> 존재하지 않는 파일 -->
+</body>
+</html>

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lonely-care 관리자 페이지</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <!-- 분할된 CSS 파일들 - 관리자 페이지용 -->
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body style="overflow-y: auto !important; height: auto !important; overflow-x: hidden !important;">
+    <div id="admin-app">
+        <div class="container" style="display: block; visibility: visible; height: auto; overflow: visible;">
+            <!-- 관리자 헤더 -->
+            <div class="header">
+                <div class="logo">🏥 lonely-care 관리자</div>
+                <div class="tagline">고독사 방지 시스템 관리 패널 v13.5</div>
+                <div class="admin-info">
+                    <span id="admin-name">로컬 관리자</span>
+                    <small>Android Native App + WebView 환경</small>
+                </div>
+            </div>
+
+            <!-- 로딩 화면 -->
+            <div id="loading-screen" style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 400px;
+                background: white;
+                flex-direction: column;
+                gap: 20px;
+            ">
+                <div style="
+                    width: 50px;
+                    height: 50px;
+                    border: 5px solid #f3f3f3;
+                    border-top: 5px solid #dc3545;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                "></div>
+                <p style="color: #666; font-size: 16px;">관리자 시스템 로딩 중...</p>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            </div>
+
+            <!-- 관리자 콘텐츠 -->
+            <div class="admin-content">
+                <!-- 통계 섹션 -->
+                <div class="stats-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0;">📊 시스템 통계 (실시간)</h2>
+                        <button class="btn" onclick="adminManager.loadOverviewData()" style="font-size: 12px; padding: 8px 16px;">🔄 새로고침</button>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-users">-</div>
+                            <div class="stat-label">총 회원수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="active-users">-</div>
+                            <div class="stat-label">활동 회원수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="warning-users">-</div>
+                            <div class="stat-label">위험 상태</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="emergency-users">-</div>
+                            <div class="stat-label">응급 상황</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-notifications">-</div>
+                            <div class="stat-label">전체 알림수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="friend-pairs">-</div>
+                            <div class="stat-label">친구 관계</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="motion-events">-</div>
+                            <div class="stat-label">움직임 감지</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="heartbeat-count">-</div>
+                            <div class="stat-label">하트비트</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 알림 시간 설정 섹션 -->
+                <div class="section">
+                    <h2>⏰ 알림 시간 설정</h2>
+                    <div class="notification-settings">
+                        <div class="form-container">
+                            <h3>무응답 알림 시간 설정</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="warning-time">⚠️ 주의 알림 (분)</label>
+                                    <input type="number" id="warning-time" min="1" max="10080" value="1440" placeholder="분 단위">
+                                    <small>기본값: 1440분 (24시간)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="danger-time">🟠 위험 알림 (분)</label>
+                                    <input type="number" id="danger-time" min="1" max="10080" value="2880" placeholder="분 단위">
+                                    <small>기본값: 2880분 (48시간)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="emergency-time">🚨 응급 알림 (분)</label>
+                                    <input type="number" id="emergency-time" min="1" max="10080" value="4320" placeholder="분 단위">
+                                    <small>기본값: 4320분 (72시간)</small>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn" onclick="adminManager.saveNotificationSettings()">설정 저장</button>
+                                <button class="btn-secondary" onclick="adminManager.resetToDefaults()">기본값 복원</button>
+                                <button class="btn-test" onclick="adminManager.testNotificationSettings()">테스트 설정 (1,2,3분)</button>
+                                <button class="btn-test" onclick="adminManager.quickTestSettings()">빠른 테스트 (5,10,20분)</button>
+                            </div>
+                        </div>
+                        
+                        <div class="current-settings">
+                            <h3>현재 설정</h3>
+                            <div class="settings-display">
+                                <div class="setting-item">
+                                    <span class="setting-label">주의 알림:</span>
+                                    <span id="current-warning" class="setting-value">1440분 (24시간)</span>
+                                </div>
+                                <div class="setting-item">
+                                    <span class="setting-label">위험 알림:</span>
+                                    <span id="current-danger" class="setting-value">2880분 (48시간)</span>
+                                </div>
+                                <div class="setting-item">
+                                    <span class="setting-label">응급 알림:</span>
+                                    <span id="current-emergency" class="setting-value">4320분 (72시간)</span>
+                                </div>
+                                <div class="setting-item">
+                                    <span class="setting-label">마지막 수정:</span>
+                                    <span id="last-modified" class="setting-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 시스템 상태 섹션 -->
+                <div class="section">
+                    <h2>🔧 시스템 상태</h2>
+                    <div class="system-status-grid">
+                        <div class="status-card">
+                            <div class="status-title">📱 Android APK 배포</div>
+                            <div class="status-info">
+                                <div class="status-item">
+                                    <span>최신 버전:</span>
+                                    <span id="apk-version">v13.5</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>테스트 기기 1:</span>
+                                    <span id="device-1-status">R3CR700S4QH ✅</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>테스트 기기 2:</span>
+                                    <span id="device-2-status">R3CY50K0NCY ✅</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-title">🔥 Firebase 연결</div>
+                            <div class="status-info">
+                                <div class="status-item">
+                                    <span>데이터베이스:</span>
+                                    <span id="firebase-status">연결됨 ✅</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>실시간 기능:</span>
+                                    <span id="realtime-status">활성 ✅</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>저장소 사용량:</span>
+                                    <span id="storage-usage">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-title">📊 움직임 감지 시스템</div>
+                            <div class="status-info">
+                                <div class="status-item">
+                                    <span>센서 상태:</span>
+                                    <span id="sensor-status">활성 ✅</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>백그라운드 서비스:</span>
+                                    <span id="background-service">실행 중 ✅</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>알림 시스템:</span>
+                                    <span id="notification-system">정상 ✅</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-title">💝 하트비트 시스템</div>
+                            <div class="status-info">
+                                <div class="status-item">
+                                    <span>하트비트 간격:</span>
+                                    <span id="heartbeat-interval">5분</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>상태 확인:</span>
+                                    <span id="status-check">5분</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>마지막 업데이트:</span>
+                                    <span id="last-heartbeat">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사용자 관리 섹션 -->
+                <div class="section">
+                    <h2>👥 사용자 관리</h2>
+                    
+                    <!-- 사용자 탭 네비게이션 -->
+                    <div class="tabs">
+                        <button class="tab active" onclick="adminManager.showUserTab('all')">전체 사용자</button>
+                        <button class="tab" onclick="adminManager.showUserTab('active')">활성 사용자</button>
+                        <button class="tab" onclick="adminManager.showUserTab('inactive')">비활성 사용자</button>
+                        <button class="tab" onclick="adminManager.showUserTab('warning')">경고 상태</button>
+                    </div>
+
+                    <!-- 사용자 컨테이너 -->
+                    <div id="users-container">
+                        <div class="loading-message">사용자 데이터를 로딩 중입니다...</div>
+                    </div>
+
+                    <!-- 사용자 검색 -->
+                    <div class="search-section">
+                        <h3>🔍 사용자 검색</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="user-search-name">이름</label>
+                                <input type="text" id="user-search-name" placeholder="사용자 이름으로 검색">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-search-email">이메일</label>
+                                <input type="email" id="user-search-email" placeholder="이메일로 검색">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-search-status">상태</label>
+                                <select id="user-search-status">
+                                    <option value="">전체 상태</option>
+                                    <option value="active">활성</option>
+                                    <option value="inactive">비활성</option>
+                                    <option value="warning">경고</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn" onclick="adminManager.searchUsers()">검색</button>
+                                <button class="btn-secondary" onclick="adminManager.resetUserSearch()">초기화</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 광고 배너 관리 섹션 -->
+                <div class="section">
+                    <h2>📢 광고 배너 관리</h2>
+                    
+                    <!-- 새 광고 배너 추가 -->
+                    <div class="form-container">
+                        <h3>새 광고 배너 추가</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="ad-category">광고 카테고리</label>
+                                <select id="ad-category">
+                                    <option value="insurance">보험</option>
+                                    <option value="funeral">상조</option>
+                                    <option value="lawyer">상속변호사</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-title">광고 제목</label>
+                                <input type="text" id="ad-title" placeholder="광고 제목을 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-description">광고 설명</label>
+                                <textarea id="ad-description" rows="3" placeholder="광고 설명을 입력하세요"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-url">링크 URL (선택사항)</label>
+                                <input type="url" id="ad-url" placeholder="https://example.com">
+                                <small>배너 클릭 시 이동할 주소</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-button-text">버튼 텍스트 (선택사항)</label>
+                                <input type="text" id="ad-button-text" placeholder="예: 상담받기, 자세히보기">
+                                <small>배너에 표시될 버튼 텍스트</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-banner-type">배너 타입</label>
+                                <select id="ad-banner-type">
+                                    <option value="info">정보 (파란색)</option>
+                                    <option value="warning">경고 (노란색)</option>
+                                    <option value="error">오류 (빨간색)</option>
+                                    <option value="success">성공 (초록색)</option>
+                                    <option value="announcement">공지 (보라색)</option>
+                                </select>
+                                <small>배너의 색상과 아이콘을 결정합니다</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-priority">우선순위 (0-10)</label>
+                                <input type="number" id="ad-priority" value="0" min="0" max="10">
+                                <small>높을수록 먼저 표시됩니다 (0=일반, 10=최우선)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-color-scheme">색상 테마</label>
+                                <select id="ad-color-scheme">
+                                    <option value="#fef2f2,#ffffff,#ef4444">높은 우선순위 (연한 분홍)</option>
+                                    <option value="#f0fdf4,#ffffff,#22c55e">보통 우선순위 (연한 초록)</option>
+                                    <option value="#eff6ff,#ffffff,#3b82f6">낮은 우선순위 (연한 파랑)</option>
+                                    <option value="#ffffff,#f8fafc,#64748b">기본 (연한 회색)</option>
+                                    <option value="#fff7ed,#ffffff,#f97316">주황색 (따뜻한 톤)</option>
+                                    <option value="#f3e8ff,#ffffff,#a855f7">보라색 (우아한 톤)</option>
+                                </select>
+                                <small>배경색1,배경색2,액센트색으로 저장됩니다</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="ad-custom-colors">사용자 정의 색상 (선택사항)</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="color" id="ad-bg-color1" value="#ffffff" title="배경색 1">
+                                    <input type="color" id="ad-bg-color2" value="#f8fafc" title="배경색 2">
+                                    <input type="color" id="ad-accent-color" value="#3b82f6" title="액센트색">
+                                    <button type="button" onclick="adminManager.applyCustomColors()" style="padding: 8px 12px; font-size: 12px;">적용</button>
+                                </div>
+                                <small>직접 색상을 선택하여 적용할 수 있습니다</small>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn" onclick="adminManager.addNewAd()">광고 배너 추가</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 기존 광고 배너 -->
+                    <div class="ads-management">
+                        <h3>기존 광고 배너</h3>
+                        <div class="tabs">
+                            <button class="tab active" onclick="adminManager.showAdTab('insurance')">보험</button>
+                            <button class="tab" onclick="adminManager.showAdTab('funeral')">상조</button>
+                            <button class="tab" onclick="adminManager.showAdTab('lawyer')">상속변호사</button>
+                        </div>
+                        
+                        <div class="ads-categories">
+                            <div id="insurance-ads" class="ads-list">
+                                <div class="loading-message">보험 광고를 로딩 중입니다...</div>
+                            </div>
+                            <div id="funeral-ads" class="ads-list hidden">
+                                <div class="loading-message">상조 광고를 로딩 중입니다...</div>
+                            </div>
+                            <div id="lawyer-ads" class="ads-list hidden">
+                                <div class="loading-message">변호사 광고를 로딩 중입니다...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 비상 연락처 관리 섹션 -->
+                <div class="section">
+                    <h2>🚨 비상 연락처 관리</h2>
+                    
+                    <div class="form-container">
+                        <h3>새 비상 연락처 추가</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="emergency-name">기관명</label>
+                                <input type="text" id="emergency-name" placeholder="예: 강남구청">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-phone">전화번호</label>
+                                <input type="tel" id="emergency-phone" placeholder="예: 02-1234-5678">
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-type">유형</label>
+                                <select id="emergency-type">
+                                    <option value="fire">소방서</option>
+                                    <option value="police">경찰서</option>
+                                    <option value="admin">행정기관</option>
+                                    <option value="medical">의료기관</option>
+                                    <option value="other">기타</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-url">긴급연락 URL (선택사항)</label>
+                                <input type="url" id="emergency-url" placeholder="https://api.example.gov/emergency-report">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn" onclick="adminManager.addEmergencyContact()">비상 연락처 추가</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="emergency-contacts-section">
+                        <h3>기존 비상 연락처</h3>
+                        <div id="emergency-contacts-container">
+                            <div class="loading-message">비상 연락처를 로딩 중입니다...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 119 API 관리 섹션 -->
+                <div class="section">
+                    <h2>🚨 119 API 관리</h2>
+                    
+                    <div class="form-container">
+                        <h3>119 응급신고 API 설정</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="api-119-url">119 API 엔드포인트 URL</label>
+                                <input type="url" id="api-119-url" placeholder="https://api.119.go.kr/emergency-report">
+                                <small>119 응급신고를 위한 API 주소</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="api-119-key">API 인증 키</label>
+                                <input type="password" id="api-119-key" placeholder="API 인증 키를 입력하세요">
+                                <small>119 API 접근을 위한 인증 키</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="api-119-method">HTTP 메서드</label>
+                                <select id="api-119-method">
+                                    <option value="POST">POST</option>
+                                    <option value="PUT">PUT</option>
+                                    <option value="PATCH">PATCH</option>
+                                </select>
+                                <small>API 호출 시 사용할 HTTP 메서드</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="api-119-timeout">타임아웃 (초)</label>
+                                <input type="number" id="api-119-timeout" value="30" min="5" max="120">
+                                <small>API 응답 대기 시간 (5-120초)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="api-119-retry">재시도 횟수</label>
+                                <input type="number" id="api-119-retry" value="3" min="1" max="10">
+                                <small>API 호출 실패 시 재시도 횟수 (1-10회)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="api-119-enabled">API 사용 여부</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="api-119-enabled" checked>
+                                    <span class="toggle-slider"></span>
+                                    119 API 활성화
+                                </label>
+                                <small>체크 해제 시 SMS로만 신고</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-container">
+                        <h3>메시지 템플릿 설정</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="msg-template-normal">일반 신고 메시지</label>
+                                <textarea id="msg-template-normal" rows="3" placeholder="lonely-care 고독사 방지 시스템에서 신고합니다. 사용자: {userName}, 연락처: {userPhone}, 주소: {userAddress}, 상태: {status}, 시간: {timestamp}"></textarea>
+                                <small>변수: {userName}, {userPhone}, {userAddress}, {status}, {timestamp}</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="msg-template-emergency">응급 신고 메시지</label>
+                                <textarea id="msg-template-emergency" rows="3" placeholder="[응급] lonely-care 응급상황 신고! 사용자: {userName}, 연락처: {userPhone}, 주소: {userAddress}, 72시간 무응답 상태, 즉시 확인 요청, 시간: {timestamp}"></textarea>
+                                <small>72시간 무응답 시 사용되는 응급 메시지</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="msg-template-test">테스트 메시지</label>
+                                <textarea id="msg-template-test" rows="2" placeholder="[테스트] lonely-care 119 API 연동 테스트입니다. 시간: {timestamp}"></textarea>
+                                <small>API 테스트용 메시지</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-container">
+                        <h3>추가 설정</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="backup-sms-enabled">백업 SMS 활성화</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="backup-sms-enabled" checked>
+                                    <span class="toggle-slider"></span>
+                                    API 실패시 SMS 발송
+                                </label>
+                                <small>119 API 호출 실패 시 SMS로 백업 신고</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="sms-119-number">119 SMS 번호</label>
+                                <input type="tel" id="sms-119-number" value="119" placeholder="119">
+                                <small>SMS 백업 신고용 119 번호</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="auto-report-enabled">자동 신고 활성화</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="auto-report-enabled" checked>
+                                    <span class="toggle-slider"></span>
+                                    72시간 무응답시 자동 신고
+                                </label>
+                                <small>사용자 무응답 72시간 시 자동으로 119 신고</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="log-retention-days">로그 보관 기간 (일)</label>
+                                <input type="number" id="log-retention-days" value="90" min="30" max="365">
+                                <small>119 API 호출 로그 보관 기간 (30-365일)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="api-actions">
+                        <button class="btn save-btn" onclick="api119Manager.saveSettings()">119 API 설정 저장</button>
+                        <button class="btn test-btn" onclick="api119Manager.testConnection()">연결 테스트</button>
+                        <button class="btn" onclick="api119Manager.sendTestMessage()">테스트 메시지 발송</button>
+                        <button class="btn-secondary" onclick="api119Manager.loadSettings()">설정 새로고침</button>
+                    </div>
+
+                    <div class="api-status-section">
+                        <h3>119 API 상태</h3>
+                        <div class="status-grid">
+                            <div class="status-card">
+                                <div class="status-title">연결 상태</div>
+                                <div class="status-info">
+                                    <div class="status-item">
+                                        <span>API 상태:</span>
+                                        <span id="api-119-status">확인 중...</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span>마지막 테스트:</span>
+                                        <span id="api-119-last-test">-</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span>응답 시간:</span>
+                                        <span id="api-119-response-time">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="status-card">
+                                <div class="status-title">사용 통계</div>
+                                <div class="status-info">
+                                    <div class="status-item">
+                                        <span>오늘 호출:</span>
+                                        <span id="api-119-today-calls">-</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span>이번 달 호출:</span>
+                                        <span id="api-119-month-calls">-</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span>성공률:</span>
+                                        <span id="api-119-success-rate">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="api-logs-section">
+                        <h3>119 API 호출 로그</h3>
+                        <div class="log-controls">
+                            <button class="btn" onclick="api119Manager.loadLogs()">로그 새로고침</button>
+                            <button class="btn" onclick="api119Manager.clearOldLogs()">오래된 로그 삭제</button>
+                            <button class="btn" onclick="api119Manager.exportLogs()">로그 내보내기</button>
+                        </div>
+                        <div id="api-119-logs" class="logs-container">
+                            <div class="loading-message">119 API 로그를 로딩 중입니다...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 알림 관리 섹션 -->
+                <div class="section">
+                    <h2>🔔 알림 관리</h2>
+                    
+                    <!-- 알림 탭 네비게이션 -->
+                    <div class="tabs">
+                        <button class="tab active" onclick="adminManager.showNotificationTab('all')">전체 알림</button>
+                        <button class="tab" onclick="adminManager.showNotificationTab('warning')">경고 알림</button>
+                        <button class="tab" onclick="adminManager.showNotificationTab('danger')">위험 알림</button>
+                        <button class="tab" onclick="adminManager.showNotificationTab('emergency')">응급 알림</button>
+                        <button class="tab" onclick="adminManager.showNotificationTab('recent')">최근 24시간</button>
+                    </div>
+
+                    <!-- 알림 컨테이너 -->
+                    <div id="notifications-container">
+                        <div class="loading-message">알림을 로딩 중입니다...</div>
+                    </div>
+
+                    <!-- 시스템 알림 발송 -->
+                    <div class="system-notification-section">
+                        <h3>시스템 알림 발송</h3>
+                        <div class="form-group">
+                            <label for="system-message">시스템 메시지</label>
+                            <textarea id="system-message" rows="3" placeholder="모든 사용자에게 발송할 메시지를 입력하세요"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="system-notification-type">알림 유형</label>
+                            <select id="system-notification-type">
+                                <option value="info">일반 정보</option>
+                                <option value="warning">주의</option>
+                                <option value="danger">경고</option>
+                                <option value="emergency">긴급</option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="adminManager.sendSystemNotification()">전체 사용자에게 발송</button>
+                    </div>
+                </div>
+
+                <!-- 실시간 모니터링 대시보드 섹션 -->
+                <div class="section">
+                    <h2>🚨 실시간 모니터링 시스템</h2>
+                    <div id="monitoring-dashboard">
+                        <!-- 모니터링 대시보드 컴포넌트가 여기에 렌더링됩니다 -->
+                        <div class="loading-message">실시간 모니터링 시스템을 로딩 중입니다...</div>
+                    </div>
+                </div>
+
+                <!-- 설정 관리 섹션 -->
+                <div class="section">
+                    <h2>⚙️ 시스템 설정</h2>
+                    
+                    <!-- 알림 시스템 설정 -->
+                    <div class="settings-subsection">
+                        <h3>알림 시스템 설정</h3>
+                        <div class="form-grid">
+                            <div class="setting-item">
+                                <label>
+                                    24시간 경고 활성화
+                                    <input type="checkbox" id="warning-24h" checked>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    48시간 위험 활성화
+                                    <input type="checkbox" id="warning-48h" checked>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    72시간 응급 신고 활성화
+                                    <input type="checkbox" id="emergency-72h" checked>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 데이터 관리 -->
+                    <div class="settings-subsection">
+                        <h3>데이터 관리</h3>
+                        <div class="data-management">
+                            <button class="btn" onclick="adminManager.exportAllData()">전체 데이터 내보내기</button>
+                            <button class="btn" onclick="adminManager.exportUsersData()">회원 데이터 내보내기</button>
+                            <button class="btn" onclick="adminManager.exportNotificationsData()">알림 데이터 내보내기</button>
+                            <button class="btn danger-btn" onclick="adminManager.clearOldData()">오래된 데이터 정리</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn save-btn" onclick="adminManager.saveAllSettings()">모든 설정 저장</button>
+                    </div>
+                </div>
+
+                <!-- 최근 활동 -->
+                <div class="section">
+                    <h2>📈 최근 활동</h2>
+                    <div id="recent-activities">
+                        <div class="loading-message">최근 활동을 로딩 중입니다...</div>
+                    </div>
+                </div>
+                
+                <!-- 💳 요금제 관리 섹션 -->
+                <div class="section">
+                    <h2>💳 요금제 관리</h2>
+                    
+                    <!-- 요금제 통계 -->
+                    <div class="subscription-stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-revenue">-</div>
+                            <div class="stat-label">누적 매출</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="monthly-revenue">-</div>
+                            <div class="stat-label">이번 달 매출</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="active-subscriptions">-</div>
+                            <div class="stat-label">활성 구독</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="average-arpu">-</div>
+                            <div class="stat-label">사용자당 매출(ARPU)</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 플랜 분포 차트 -->
+                    <div class="chart-section">
+                        <h3>플랜 분포</h3>
+                        <div id="plan-distribution-chart" class="chart-container">
+                            <div class="loading-message">플랜 분포 데이터를 로딩 중...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 매출 트렌드 -->
+                    <div class="chart-section">
+                        <h3>매출 트렌드</h3>
+                        <div id="revenue-trend-chart" class="chart-container">
+                            <div class="loading-message">매출 데이터를 로딩 중...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 관리 버튼들 -->
+                    <div class="subscription-actions">
+                        <button class="btn" onclick="subscriptionAdmin.loadSubscriptionsList()">📄 구독 목록 보기</button>
+                        <button class="btn" onclick="subscriptionAdmin.loadPaymentHistory()">💳 결제 내역 보기</button>
+                        <button class="btn" onclick="subscriptionAdmin.generateRevenueReport()">📈 매출 리포트</button>
+                        <button class="btn" onclick="subscriptionAdmin.loadSubscriptionStats()">🔄 통계 새로고침</button>
+                    </div>
+                    
+                    <!-- 구독 목록 -->
+                    <div class="subscriptions-container">
+                        <h3>최근 구독 목록</h3>
+                        <div id="subscriptions-list" class="subscriptions-list">
+                            <div class="loading-message">구독 데이터를 로딩 중...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 결제 내역 -->
+                    <div class="payment-history-container">
+                        <h3>최근 결제 내역</h3>
+                        <div id="payment-history-list" class="payment-history-list">
+                            <div class="loading-message">결제 내역을 로딩 중...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 광고 편집 모달 -->
+    <div id="ad-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="ad-modal-title">광고 편집</h3>
+            <form id="ad-form">
+                <div class="form-group">
+                    <label for="edit-ad-category">카테고리</label>
+                    <select id="edit-ad-category" required>
+                        <option value="insurance">보험</option>
+                        <option value="funeral">상조</option>
+                        <option value="lawyer">변호사</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ad-title">제목</label>
+                    <input type="text" id="edit-ad-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ad-description">설명</label>
+                    <textarea id="edit-ad-description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ad-banner-type">배너 타입</label>
+                    <select id="edit-ad-banner-type">
+                        <option value="info">정보</option>
+                        <option value="warning">경고</option>
+                        <option value="success">성공</option>
+                        <option value="announcement">공지</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ad-priority">우선순위</label>
+                    <input type="number" id="edit-ad-priority" value="0" min="0">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn">저장</button>
+                    <button type="button" class="btn btn-secondary" onclick="adminManager.hideAdModal()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK 및 스크립트 -->
+    <!-- Firebase SDK 로드 오류 방지 -->
+    <script>
+        // 전역 오류 핸들러 설정 (Firebase 로드 전)
+        window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('message channel closed')) {
+                console.log('🔧 Chrome 확장 프로그램 스크립트 오류 무시됨');
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+    
+    <!-- 중앙화된 Firebase 설정 로드 -->
+    <script src="../js/env-vars-injected.js"></script>
+    <script src="../js/env-config.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    
+    <script>
+        // Firebase 설정 - 중앙화된 설정 사용
+        let firebaseConfig = window.firebaseConfig;
+        
+        // 중앙화된 설정이 로드되지 않은 경우 백업 설정 사용
+        if (!firebaseConfig) {
+            console.warn('⚠️ 중앙화된 Firebase 설정이 로드되지 않았습니다. 백업 설정 사용');
+            firebaseConfig = {
+                apiKey: "AIzaSyD6pdH5S3y6JcRQFxf5nEUliNccqM4rK5o",
+                authDomain: "lonely-care-app.firebaseapp.com",
+                projectId: "lonely-care-app",
+                storageBucket: "lonely-care-app.firebasestorage.app",
+                messagingSenderId: "965854578277",
+                appId: "1:965854578277:web:6315e84a930432232ba88c"
+            };
+        } else {
+            console.log('✅ Admin 페이지: 중앙화된 Firebase 설정 사용 중');
+        }
+
+        // Firebase 초기화 및 대기
+        let adminApp, firebaseDb;
+        
+        async function initializeFirebase() {
+            return new Promise((resolve, reject) => {
+                try {
+                    if (!firebase.apps.length) {
+                        adminApp = firebase.initializeApp(firebaseConfig);
+                        console.log('🔥 Firebase 앱 초기화 완료');
+                    } else {
+                        adminApp = firebase.apps[0];
+                        console.log('🔥 기존 Firebase 앱 사용');
+                    }
+                    
+                    firebaseDb = firebase.firestore();
+                    console.log('🔥 Firestore 연결 완료');
+                    
+                    // 전역 변수 설정
+                    window.firebaseDb = firebaseDb;
+                    window.firebase = firebase;
+                    
+                    console.log('🔥 Admin Firebase 완전 초기화 완료');
+                    
+                    // 즉시 resolve (오프라인 지원은 선택사항)
+                    resolve(firebaseDb);
+                    
+                    // 🚨 생명구조 앱: Firebase Persistence 중복 설정 방지
+                    setTimeout(() => {
+                        if (!window.firebasePersistenceInitialized) {
+                            firebaseDb.enablePersistence({ synchronizeTabs: true }).then(() => {
+                                window.firebasePersistenceInitialized = true;
+                                console.log('✅ Firebase 오프라인 지원 활성화');
+                            }).catch((err) => {
+                                if (err.code === 'failed-precondition') {
+                                    console.warn('⚠️ 오프라인 지원: 여러 탭이 열려있음');
+                                    window.firebasePersistenceInitialized = true; // 이미 다른 곳에서 설정됨
+                                } else if (err.code === 'unimplemented') {
+                                    console.warn('⚠️ 오프라인 지원: 브라우저 미지원');
+                                    window.firebasePersistenceInitialized = true;
+                                } else {
+                                    console.warn('⚠️ 오프라인 지원 오류:', err.message);
+                                    // persistence가 이미 시작된 경우
+                                    if (err.message.includes('already been started')) {
+                                        console.log('📝 Firebase Persistence 이미 활성화됨');
+                                        window.firebasePersistenceInitialized = true;
+                                    }
+                                }
+                                console.log('📝 오프라인 지원 없이 계속 실행');
+                            });
+                        } else {
+                            console.log('📝 Firebase Persistence 이미 초기화됨 - Admin 중복 설정 방지');
+                        }
+                    }, 100);
+                    
+                } catch (error) {
+                    console.error('❌ Firebase 초기화 실패:', error);
+                    reject(error);
+                }
+            });
+        }
+        
+        // Firebase 초기화 실행 후 AdminManager 시작 (오류 방지 처리)
+        try {
+            initializeFirebase().then(() => {
+                console.log('🎯 Firebase 초기화 완료, AdminManager 시작 준비');
+                // AdminManager 동적 로드를 위한 이벤트 발생
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('firebaseReady'));
+                }, 50);
+            }).catch((error) => {
+                console.error('❌ Firebase 초기화 최종 실패:', error);
+                // 실패해도 AdminManager 시작 시도
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('firebaseReady'));
+                }, 50);
+            });
+        } catch (error) {
+            console.error('❌ Firebase 초기화 최종 오류:', error);
+            // 최종 백업 - AdminManager 강제 시작
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('firebaseReady'));
+            }, 100);
+        }
+    </script>
+    <script>
+        // Firebase Admin API 래퍼
+        const adminApi = {
+            // 사용자 데이터 조회
+            async getUsers(limit = 10) {
+                try {
+                    const snapshot = await window.firebaseDb.collection('users').limit(limit).get();
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('사용자 조회 실패:', error);
+                    return [];
+                }
+            },
+            
+            // 사용자 수 조회
+            async getUserCount() {
+                try {
+                    const snapshot = await window.firebaseDb.collection('users').get();
+                    return snapshot.size;
+                } catch (error) {
+                    console.error('사용자 수 조회 실패:', error);
+                    return 0;
+                }
+            },
+            
+            // 사용자 상태 조회
+            async getUserStatuses() {
+                try {
+                    const snapshot = await window.firebaseDb.collection('userStatus').get();
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('사용자 상태 조회 실패:', error);
+                    return [];
+                }
+            },
+            
+            // 친구 관계 조회
+            async getFriends() {
+                try {
+                    const snapshot = await window.firebaseDb.collection('friends').get();
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('친구 관계 조회 실패:', error);
+                    return [];
+                }
+            },
+            
+            // 알림 조회
+            async getNotifications(limit = 10) {
+                try {
+                    const snapshot = await window.firebaseDb.collection('notifications')
+                        .orderBy('createdAt', 'desc')
+                        .limit(limit)
+                        .get();
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('알림 조회 실패:', error);
+                    return [];
+                }
+            },
+            
+            // 광고 배너 조회
+            async getAdBanners(category = null) {
+                try {
+                    let query = window.firebaseDb.collection('adBanners');
+                    if (category) {
+                        query = query.where('category', '==', category);
+                    }
+                    const snapshot = await query.orderBy('priority', 'desc').get();
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('광고 배너 조회 실패:', error);
+                    return [];
+                }
+            },
+            
+            // 광고 배너 추가
+            async addAdBanner(bannerData) {
+                try {
+                    const docRef = await window.firebaseDb.collection('adBanners').add({
+                        ...bannerData,
+                        isActive: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log('광고 배너 추가 완료:', docRef.id);
+                    return { id: docRef.id, success: true };
+                } catch (error) {
+                    console.error('광고 배너 추가 실패:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+            
+            // 광고 배너 삭제
+            async deleteAdBanner(adId) {
+                try {
+                    await window.firebaseDb.collection('adBanners').doc(adId).delete();
+                    console.log('광고 배너 삭제 완료:', adId);
+                    return { success: true };
+                } catch (error) {
+                    console.error('광고 배너 삭제 실패:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+            
+            // 광고 배너 상태 토글
+            async toggleAdBannerStatus(adId, isActive) {
+                try {
+                    await window.firebaseDb.collection('adBanners').doc(adId).update({
+                        isActive: isActive,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log('광고 배너 상태 변경 완료:', adId, isActive);
+                    return { success: true };
+                } catch (error) {
+                    console.error('광고 배너 상태 변경 실패:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+            
+            // 알림 설정 조회
+            async getNotificationSettings() {
+                try {
+                    const doc = await window.firebaseDb.collection('notification_settings_admin').doc('default').get();
+                    if (doc.exists) {
+                        return doc.data();
+                    } else {
+                        // 기본 설정 반환
+                        return {
+                            warningMinutes: 1440, // 24시간
+                            dangerMinutes: 2880,   // 48시간
+                            emergencyMinutes: 4320 // 72시간
+                        };
+                    }
+                } catch (error) {
+                    console.error('알림 설정 조회 실패:', error);
+                    return {};
+                }
+            },
+            
+            // 알림 설정 저장
+            async saveNotificationSettings(settings) {
+                try {
+                    await window.firebaseDb.collection('notification_settings_admin').doc('default').set({
+                        ...settings,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log('알림 설정 저장 완료');
+                    return { success: true };
+                } catch (error) {
+                    console.error('알림 설정 저장 실패:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+        };
+        
+        window.adminApi = adminApi;
+        console.log('✅ Firebase Admin API 시스템 초기화 완료');
+    </script>
+    <script src="../js/user-id-utils.js"></script>
+    <script src="../js/firebase-storage.js"></script>
+    <script src="error-handler.js"></script>
+    <!-- 💳 요금제 관리 시스템 -->
+    <script src="../js/firebase-client.js"></script>
+    <script src="../js/subscription-database.js"></script>
+    <script src="subscription-admin.js"></script>
+    <!-- 119 API 관리 시스템 -->
+    <script src="api-119-manager.js"></script>
+    <script>
+        // Firebase 준비 완료 이벤트 대기
+        window.addEventListener('firebaseReady', function() {
+            console.log('🎯 Firebase 준비 완료 이벤트 수신');
+            
+            // 119 API 관리자 재초기화
+            if (window.api119Manager && !window.api119Manager.isInitialized) {
+                console.log('🚨 [생명구조] 119 API 관리자 재초기화 시작');
+                window.api119Manager.init().then(() => {
+                    console.log('✅ [생명구조] 119 API 관리자 재초기화 완료');
+                }).catch((error) => {
+                    console.error('❌ [생명구조] 119 API 관리자 재초기화 실패:', error);
+                });
+            }
+            
+            // 🚨 생명구조 앱: 실시간 모니터링 시스템 로드
+            console.log('📊 [생명구조] 실시간 모니터링 시스템 로드 중...');
+            
+            // 실시간 모니터링 시스템 로드
+            const monitoringScript = document.createElement('script');
+            monitoringScript.src = '../js/real-time-monitoring-system.js';
+            monitoringScript.onload = () => {
+                console.log('✅ [생명구조] 실시간 모니터링 시스템 로드 완료');
+                
+                // 모니터링 대시보드 로드
+                const dashboardScript = document.createElement('script');
+                dashboardScript.src = './monitoring-dashboard.js';
+                dashboardScript.onload = () => {
+                    console.log('✅ [생명구조] 모니터링 대시보드 로드 완료');
+                    
+                    // 배터리 최적화 시스템 로드
+                    const batteryScript = document.createElement('script');
+                    batteryScript.src = '../js/battery-optimization-system.js';
+                    batteryScript.onload = () => {
+                        console.log('✅ [생명구조] 배터리 최적화 시스템 로드 완료');
+                        
+                        // 마지막으로 admin-enhanced.js 로드
+                        loadAdminEnhanced();
+                    };
+                    batteryScript.onerror = () => {
+                        console.warn('⚠️ [생명구조] 배터리 최적화 시스템 로드 실패 - 계속 진행');
+                        loadAdminEnhanced();
+                    };
+                    document.head.appendChild(batteryScript);
+                };
+                dashboardScript.onerror = () => {
+                    console.warn('⚠️ [생명구조] 모니터링 대시보드 로드 실패 - 계속 진행');
+                    loadAdminEnhanced();
+                };
+                document.head.appendChild(dashboardScript);
+            };
+            monitoringScript.onerror = () => {
+                console.warn('⚠️ [생명구조] 실시간 모니터링 시스템 로드 실패 - 계속 진행');
+                loadAdminEnhanced();
+            };
+            document.head.appendChild(monitoringScript);
+            
+            // AdminEnhanced 로드 함수
+            function loadAdminEnhanced() {
+                // AdminManager 동적 로드 및 초기화 (올바른 경로 사용)
+                const script = document.createElement('script');
+                script.src = './admin-enhanced.js';  // 상대 경로로 수정
+                script.onload = () => {
+                    console.log('✅ [생명구조] admin-enhanced.js 로드 완료');
+                };
+                script.onerror = (error) => {
+                    console.error('❌ [생명구조] admin-enhanced.js 로드 실패:', error);
+                    // 추가 대체 경로 시도
+                    const fallbackScript = document.createElement('script');
+                    fallbackScript.src = 'admin-enhanced.js';  // 또 다른 상대 경로
+                    fallbackScript.onload = () => {
+                        console.log('✅ [생명구조] admin-enhanced.js 대체 경로로 로드 완료');
+                    };
+                    fallbackScript.onerror = () => {
+                        console.error('❌ [생명구조] 모든 admin-enhanced.js 경로 실패 - 기본 관리자 모드로 전환');
+                        // 기본 admin.js로 fallback
+                        const basicScript = document.createElement('script');
+                        basicScript.src = './admin.js';
+                        basicScript.onload = () => {
+                            console.log('✅ [생명구조] 기본 admin.js로 fallback 성공');
+                        };
+                        document.head.appendChild(basicScript);
+                    };
+                    document.head.appendChild(fallbackScript);
+                };
+                document.head.appendChild(script);
+            }
+        });
+        
+        // 🚨 Chrome 확장 프로그램 오류 방지
+        window.addEventListener('unhandledrejection', function(event) {
+            if (event.reason && event.reason.message && 
+                event.reason.message.includes('message channel closed')) {
+                console.log('🔧 Chrome 확장 프로그램 메시지 채널 오류 무시됨');
+                event.preventDefault();
+            }
+        });
+        
+        // Chrome 확장 프로그램 listener 오류 방지
+        if (typeof chrome !== 'undefined' && chrome.runtime) {
+            chrome.runtime.onMessage = chrome.runtime.onMessage || {};
+            
+            // 안전한 리스너 래퍼
+            const originalAddListener = chrome.runtime.onMessage.addListener;
+            if (originalAddListener) {
+                chrome.runtime.onMessage.addListener = function(listener) {
+                    const safeListener = function(...args) {
+                        try {
+                            return listener.apply(this, args);
+                        } catch (error) {
+                            console.log('🔧 Chrome 확장 프로그램 리스너 오류 방지:', error.message);
+                            return false;
+                        }
+                    };
+                    return originalAddListener.call(this, safeListener);
+                };
+            }
+        }
+        
+        // DOM 로드 완료 대기 (백업 시스템)
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM 로드 완료');
+            
+            // 페이지 가시성 확인
+            const container = document.querySelector('.container');
+            const header = document.querySelector('.header');
+            console.log('🔍 페이지 요소 확인:', {
+                container: !!container,
+                header: !!header,
+                adminApp: !!document.getElementById('admin-app')
+            });
+            
+            // Firebase 준비가 안된 경우 3초 후 강제 시작
+            setTimeout(() => {
+                if (!document.querySelector('script[src="./admin-enhanced.js"]') && 
+                    !document.querySelector('script[src="admin-enhanced.js"]') &&
+                    !document.querySelector('script[src="./admin.js"]')) {
+                    console.log('⚠️ Firebase 준비 타임아웃 - 강제 AdminManager 로드');
+                    window.dispatchEvent(new CustomEvent('firebaseReady'));
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

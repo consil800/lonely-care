@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lonely Care - 컴포넌트 테스트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .app-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .app-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .app-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* 로그인 섹션 */
+        #login-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .login-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .login-btn {
+            background: #fee500;
+            color: #3c1e1e;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(254, 229, 0, 0.3);
+        }
+
+        #login-error {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        /* 메인 앱 */
+        #main-app {
+            display: none;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        /* 사용자 정보 */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #667eea;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-nickname {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .user-email {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        /* 친구 상태 */
+        .friend-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .friend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .friend-info {
+            flex: 1;
+        }
+
+        .friend-nickname {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 3px;
+        }
+
+        .friend-email {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .no-response-time {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 3px;
+        }
+
+        .alert-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn:hover {
+            background: #5a67d8;
+        }
+
+        /* 컴포넌트 상태 */
+        .component-status {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .status-ok {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <h1 class="app-title">🛡️ Lonely Care</h1>
+            <p class="app-subtitle">컴포넌트 기반 독립 시스템 v2.0</p>
+        </div>
+
+        <!-- 로그인 섹션 -->
+        <div id="login-section">
+            <h2 class="login-title">카카오 로그인</h2>
+            <p>안전하고 독립적인 카카오 인증 컴포넌트</p>
+            <button class="login-btn" onclick="lonelyCareApp.login()">
+                🍫 카카오로 로그인
+            </button>
+            <div id="login-error"></div>
+        </div>
+
+        <!-- 메인 앱 -->
+        <div id="main-app">
+            <!-- 사용자 정보 섹션 -->
+            <div class="section">
+                <h3 class="section-title">👤 사용자 정보</h3>
+                <div id="user-info">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+                <button class="logout-btn" onclick="lonelyCareApp.logout()">로그아웃</button>
+            </div>
+
+            <!-- 컴포넌트 상태 -->
+            <div class="section">
+                <h3 class="section-title">🔧 컴포넌트 상태</h3>
+                <div class="component-status" id="component-status">
+                    <!-- 동적으로 업데이트됨 -->
+                </div>
+                <button class="refresh-btn" onclick="updateComponentStatus()">상태 새로고침</button>
+            </div>
+
+            <!-- 친구 상태 섹션 -->
+            <div class="section">
+                <h3 class="section-title">👥 친구 상태 모니터링</h3>
+                <button class="refresh-btn" onclick="lonelyCareApp.refreshFriendStatus()">친구 상태 새로고침</button>
+                <div id="friends-status">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 필수 라이브러리 로드 -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    
+    <!-- 컴포넌트 로드 -->
+    <script src="auth/kakao-auth-component.js"></script>
+    <script src="friend-status/friend-status-component.js"></script>
+    <script src="app-main.js"></script>
+
+    <script>
+        // 컴포넌트 상태 업데이트 함수
+        function updateComponentStatus() {
+            const statusDiv = document.getElementById('component-status');
+            if (window.lonelyCareApp) {
+                const status = lonelyCareApp.getComponentStatus();
+                
+                statusDiv.innerHTML = `
+                    <div class="status-item">
+                        <span>카카오 인증:</span>
+                        <span class="${status.kakaoAuth ? 'status-ok' : 'status-error'}">
+                            ${status.kakaoAuth ? '✅ 준비완료' : '❌ 미준비'}
+                        </span>
+                    </div>
+                    <div class="status-item">
+                        <span>친구 상태 모니터링:</span>
+                        <span class="${status.friendStatus ? 'status-ok' : 'status-error'}">
+                            ${status.friendStatus ? '✅ 활성화' : '❌ 비활성화'}
+                        </span>
+                    </div>
+                    <div class="status-item">
+                        <span>사용자 로그인:</span>
+                        <span class="${status.currentUser ? 'status-ok' : 'status-error'}">
+                            ${status.currentUser ? '✅ 로그인됨' : '❌ 미로그인'}
+                        </span>
+                    </div>
+                    <div class="status-item">
+                        <span>앱 초기화:</span>
+                        <span class="${status.isInitialized ? 'status-ok' : 'status-error'}">
+                            ${status.isInitialized ? '✅ 완료' : '❌ 진행중'}
+                        </span>
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = '<div class="status-error">앱이 로드되지 않았습니다</div>';
+            }
+        }
+
+        // 페이지 로드 후 상태 업데이트
+        setTimeout(() => {
+            updateComponentStatus();
+            setInterval(updateComponentStatus, 5000); // 5초마다 상태 업데이트
+        }, 1000);
+
+        // 전역 에러 핸들러
+        window.addEventListener('error', (event) => {
+            console.error('전역 오류:', event.error);
+        });
+
+        // 개발자 도구용 헬퍼 함수들
+        window.debugApp = {
+            getApp: () => window.lonelyCareApp,
+            getKakaoAuth: () => window.lonelyCareApp?.components.kakaoAuth,
+            getFriendStatus: () => window.lonelyCareApp?.components.friendStatus,
+            showStatus: () => console.table(window.lonelyCareApp?.getComponentStatus()),
+            testLogin: async () => {
+                try {
+                    const result = await window.lonelyCareApp?.login();
+                    console.log('테스트 로그인 결과:', result);
+                    return result;
+                } catch (error) {
+                    console.error('테스트 로그인 실패:', error);
+                }
+            }
+        };
+
+        console.log('🛠️ 개발자 도구: window.debugApp 사용 가능');
+        console.log('  - debugApp.showStatus(): 컴포넌트 상태 표시');
+        console.log('  - debugApp.testLogin(): 로그인 테스트');
+        console.log('  - debugApp.getApp(): 앱 인스턴스 접근');
+    </script>
+</body>
+</html>

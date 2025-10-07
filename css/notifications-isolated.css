@@ -1,0 +1,495 @@
+/**
+ * ===== LONELY CARE - 알림 설정 페이지 전용 CSS (노인 친화적 v2) =====
+ * 파일명: notifications-isolated.css
+ * 목적: 알림 설정 페이지 완전 격리 + 노인 친화적 디자인
+ * 네임스페이스: #notifications-page
+ *
+ * 🎨 노인 친화적 디자인 원칙:
+ * - 큰 글자: 최소 18px, 제목 24px+
+ * - 높은 대비: 명확한 색상 구분
+ * - 넉넉한 터치: 스위치 크기 증가
+ * - 명확한 구분: 테두리와 배경색으로 섹션 구분
+ */
+
+/* =====================================
+   페이지 기본 레이아웃
+   ===================================== */
+
+#notifications-page {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    color: #333 !important;
+}
+
+/* 헤더 영역 */
+#notifications-page .header {
+    text-align: center !important;
+    margin-bottom: 24px !important;
+    padding: 20px 0 !important;
+}
+
+#notifications-page .header .logo {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px !important;
+}
+
+#notifications-page .header .tagline {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.5 !important;
+}
+
+/* =====================================
+   알림 설정 섹션
+   ===================================== */
+
+#notifications-page .notification-settings-container {
+    background: #f8f9fa !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+#notifications-page .notification-settings-header {
+    margin-bottom: 20px !important;
+    padding-bottom: 16px !important;
+    border-bottom: 3px solid #74c0fc !important;
+}
+
+#notifications-page .notification-settings-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px !important;
+}
+
+/* =====================================
+   알림 설정 항목
+   ===================================== */
+
+#notifications-page .notification-setting {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 20px 0 !important;
+    border-bottom: 2px solid #e9ecef !important;
+}
+
+#notifications-page .notification-setting:last-child {
+    border-bottom: none !important;
+}
+
+#notifications-page .setting-info {
+    flex: 1 !important;
+    padding-right: 20px !important;
+}
+
+#notifications-page .setting-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 6px !important;
+}
+
+#notifications-page .setting-description {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.5 !important;
+}
+
+/* =====================================
+   스위치 버튼 (토글)
+   ===================================== */
+
+#notifications-page .switch {
+    position: relative !important;
+    display: inline-block !important;
+    width: 70px !important;
+    height: 40px !important;
+    flex-shrink: 0 !important;
+}
+
+#notifications-page .switch input {
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+#notifications-page .slider {
+    position: absolute !important;
+    cursor: pointer !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: #cbd5e1 !important;
+    transition: 0.4s !important;
+    border-radius: 40px !important;
+    border: 2px solid #94a3b8 !important;
+}
+
+#notifications-page .slider:before {
+    position: absolute !important;
+    content: "" !important;
+    height: 30px !important;
+    width: 30px !important;
+    left: 3px !important;
+    bottom: 3px !important;
+    background-color: white !important;
+    transition: 0.4s !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+#notifications-page input:checked + .slider {
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%) !important;
+    border-color: #74c0fc !important;
+}
+
+#notifications-page input:focus + .slider {
+    box-shadow: 0 0 4px #74c0fc !important;
+    outline: 3px solid rgba(116, 192, 252, 0.3) !important;
+    outline-offset: 2px !important;
+}
+
+#notifications-page input:checked + .slider:before {
+    transform: translateX(30px) !important;
+}
+
+/* =====================================
+   알림 상태 표시
+   ===================================== */
+
+#notifications-page .notification-status {
+    display: inline-block !important;
+    padding: 6px 14px !important;
+    font-size: 14px !important;
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+#notifications-page .notification-status.enabled {
+    background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%) !important;
+    color: #2e7d2e !important;
+    border: 2px solid #28a745 !important;
+}
+
+#notifications-page .notification-status.disabled {
+    background: linear-gradient(135deg, #ffeaea 0%, #f8d7da 100%) !important;
+    color: #d32f2f !important;
+    border: 2px solid #dc3545 !important;
+}
+
+/* =====================================
+   최근 알림 목록
+   ===================================== */
+
+#notifications-page .recent-notifications {
+    background: #f8f9fa !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-top: 24px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+#notifications-page .recent-notifications h3 {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+}
+
+#notifications-page .notification-item {
+    background: white !important;
+    padding: 18px !important;
+    margin-bottom: 12px !important;
+    border-radius: 8px !important;
+    border-left: 4px solid #74c0fc !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s ease !important;
+}
+
+#notifications-page .notification-item:hover {
+    background: #f0f8ff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12) !important;
+}
+
+#notifications-page .notification-item.unread {
+    background: linear-gradient(135deg, #e3f2fd 0%, #d0e9ff 100%) !important;
+    border-left-color: #2196f3 !important;
+    font-weight: 600 !important;
+}
+
+#notifications-page .notification-content {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+}
+
+#notifications-page .notification-message {
+    flex: 1 !important;
+    font-size: 18px !important;
+    line-height: 1.5 !important;
+    color: #1e293b !important;
+    font-weight: 500 !important;
+}
+
+#notifications-page .notification-time {
+    font-size: 14px !important;
+    color: #64748b !important;
+    margin-left: 16px !important;
+    white-space: nowrap !important;
+    font-weight: 600 !important;
+}
+
+#notifications-page .notification-type {
+    margin-right: 8px !important;
+    font-size: 20px !important;
+}
+
+/* =====================================
+   알림 카테고리별 색상
+   ===================================== */
+
+/* 친구 상태 알림 - 파란색 */
+#notifications-page .notification-item[data-type="friend-status"] {
+    border-left-color: #74c0fc !important;
+}
+
+/* 긴급 알림 - 빨간색 */
+#notifications-page .notification-item[data-type="emergency"] {
+    border-left-color: #dc3545 !important;
+}
+
+/* 시스템 알림 - 초록색 */
+#notifications-page .notification-item[data-type="system"] {
+    border-left-color: #28a745 !important;
+}
+
+/* 일반 알림 - 노란색 */
+#notifications-page .notification-item[data-type="general"] {
+    border-left-color: #ffc107 !important;
+}
+
+/* =====================================
+   알림 설정 카드
+   ===================================== */
+
+#notifications-page .notification-settings-card {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-bottom: 16px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    border: 2px solid #e9ecef !important;
+}
+
+#notifications-page .notification-settings-card h4 {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 2px solid #e9ecef !important;
+}
+
+/* =====================================
+   알림 없음 상태
+   ===================================== */
+
+#notifications-page .no-notifications {
+    text-align: center !important;
+    padding: 60px 20px !important;
+    color: #94a3b8 !important;
+}
+
+#notifications-page .no-notifications-icon {
+    font-size: 64px !important;
+    margin-bottom: 20px !important;
+    opacity: 0.6 !important;
+}
+
+#notifications-page .no-notifications-text {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    margin-bottom: 8px !important;
+}
+
+#notifications-page .no-notifications-subtext {
+    font-size: 16px !important;
+    color: #94a3b8 !important;
+}
+
+/* =====================================
+   버튼 스타일
+   ===================================== */
+
+#notifications-page .btn-clear-all {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 24px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 48px !important;
+    margin-top: 16px !important;
+}
+
+#notifications-page .btn-clear-all:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+}
+
+#notifications-page .btn-test-notification {
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 24px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 48px !important;
+    width: 100% !important;
+}
+
+#notifications-page .btn-test-notification:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(116, 192, 252, 0.3) !important;
+}
+
+/* =====================================
+   반응형 디자인
+   ===================================== */
+
+@media (max-width: 768px) {
+    #notifications-page {
+        font-size: 17px !important;
+    }
+
+    #notifications-page .header .logo {
+        font-size: 24px !important;
+    }
+
+    #notifications-page .header .tagline {
+        font-size: 15px !important;
+    }
+
+    #notifications-page .notification-settings-container {
+        padding: 16px !important;
+    }
+
+    #notifications-page .notification-setting {
+        padding: 16px 0 !important;
+    }
+
+    #notifications-page .setting-title {
+        font-size: 18px !important;
+    }
+
+    #notifications-page .setting-description {
+        font-size: 15px !important;
+    }
+
+    #notifications-page .switch {
+        width: 60px !important;
+        height: 34px !important;
+    }
+
+    #notifications-page .slider:before {
+        height: 26px !important;
+        width: 26px !important;
+    }
+
+    #notifications-page input:checked + .slider:before {
+        transform: translateX(26px) !important;
+    }
+
+    #notifications-page .notification-content {
+        flex-direction: column !important;
+    }
+
+    #notifications-page .notification-time {
+        margin-left: 0 !important;
+        margin-top: 8px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #notifications-page {
+        font-size: 16px !important;
+    }
+
+    #notifications-page .header .logo {
+        font-size: 22px !important;
+    }
+
+    #notifications-page .notification-settings-container {
+        padding: 14px !important;
+    }
+
+    #notifications-page .notification-settings-title {
+        font-size: 22px !important;
+    }
+
+    #notifications-page .notification-item {
+        padding: 16px !important;
+    }
+
+    #notifications-page .notification-message {
+        font-size: 17px !important;
+    }
+}
+
+/* =====================================
+   접근성 개선
+   ===================================== */
+
+/* 포커스 표시 강화 */
+#notifications-page button:focus,
+#notifications-page input:focus + .slider {
+    outline: 3px solid #74c0fc !important;
+    outline-offset: 2px !important;
+}
+
+/* 터치 영역 확대 */
+#notifications-page button,
+#notifications-page .switch {
+    touch-action: manipulation !important;
+}
+
+#notifications-page .notification-setting {
+    min-height: 80px !important;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+    #notifications-page .notification-settings-container {
+        border-width: 3px !important;
+    }
+
+    #notifications-page .notification-item {
+        border-width: 3px !important;
+    }
+
+    #notifications-page button {
+        border: 2px solid currentColor !important;
+    }
+
+    #notifications-page .slider {
+        border-width: 3px !important;
+    }
+}

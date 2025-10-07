@@ -1,0 +1,535 @@
+/**
+ * ===== LONELY CARE - 광고 페이지 전용 CSS (노인 친화적 v2) =====
+ * 파일명: ads-isolated.css
+ * 목적: 광고 페이지 완전 격리 + 노인 친화적 디자인
+ * 네임스페이스: #ads-page
+ *
+ * 🎨 노인 친화적 디자인 원칙:
+ * - 큰 글자: 최소 18px, 제목 24px+
+ * - 높은 대비: 명확한 색상 구분
+ * - 넉넉한 터치: 버튼 최소 48px 높이
+ * - 명확한 구분: 테두리와 배경색으로 섹션 구분
+ */
+
+/* =====================================
+   페이지 기본 레이아웃
+   ===================================== */
+
+#ads-page {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    color: #333 !important;
+    min-height: calc(100vh - 80px) !important;
+    padding-bottom: 40px !important;
+}
+
+/* 헤더 영역 */
+#ads-page .header {
+    text-align: center !important;
+    margin-bottom: 24px !important;
+    padding: 20px 0 !important;
+}
+
+#ads-page .header .logo {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px !important;
+}
+
+#ads-page .header .tagline {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.5 !important;
+}
+
+/* =====================================
+   탭 시스템 (보험/상조/변호사)
+   ===================================== */
+
+#ads-page .tabs {
+    display: flex !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+    border-radius: 20px !important;
+    margin-bottom: 30px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 20px rgba(102, 179, 255, 0.15) !important;
+    border: 2px solid #cce6ff !important;
+    min-height: 120px !important;
+    align-items: center !important;
+    gap: 16px !important;
+    overflow: visible !important;
+}
+
+#ads-page .tab {
+    flex: 1 !important;
+    max-width: 180px !important;
+    padding: 20px 28px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 3px solid #d1e3f8 !important;
+    border-radius: 16px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    line-height: 1.4 !important;
+    color: #334155 !important;
+    min-height: 72px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+#ads-page .tab:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 6px 20px rgba(74, 158, 255, 0.25) !important;
+    border-color: #74c0fc !important;
+}
+
+#ads-page .tab.active {
+    background: linear-gradient(145deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+    color: #1e40af !important;
+    border-color: #4a9eff !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.35) !important;
+    font-weight: 700 !important;
+}
+
+#ads-page .tab:active {
+    transform: translateY(-2px) !important;
+}
+
+/* 보험 탭 - 파란색 (광고 카드와 동일한 색상) */
+#ads-page .tab[data-tab="insurance"] {
+    border-color: #b3d9ff !important;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+}
+
+#ads-page .tab[data-tab="insurance"]:hover {
+    border-color: #74c0fc !important;
+    background: linear-gradient(145deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+}
+
+#ads-page .tab[data-tab="insurance"].active {
+    background: linear-gradient(145deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+    border-color: #4a9eff !important;
+    color: #1e40af !important;
+}
+
+/* 상조 탭 - 보라색 */
+#ads-page .tab[data-tab="funeral"] {
+    border-color: #d4b3e0 !important;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+}
+
+#ads-page .tab[data-tab="funeral"]:hover {
+    border-color: #b57edc !important;
+    background: linear-gradient(145deg, #faf7ff 0%, #f0e6ff 100%) !important;
+}
+
+#ads-page .tab[data-tab="funeral"].active {
+    background: linear-gradient(145deg, #faf7ff 0%, #f0e6ff 100%) !important;
+    border-color: #9b59b6 !important;
+    color: #6b21a8 !important;
+}
+
+/* 변호사 탭 - 초록색 */
+#ads-page .tab[data-tab="lawyer"] {
+    border-color: #a8d5a8 !important;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+}
+
+#ads-page .tab[data-tab="lawyer"]:hover {
+    border-color: #6ec96e !important;
+    background: linear-gradient(145deg, #f0fff4 0%, #e6f7e9 100%) !important;
+}
+
+#ads-page .tab[data-tab="lawyer"].active {
+    background: linear-gradient(145deg, #f0fff4 0%, #e6f7e9 100%) !important;
+    border-color: #28a745 !important;
+    color: #166534 !important;
+}
+
+/* =====================================
+   광고 배너 카드
+   ===================================== */
+
+#ads-page .ad-banner {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin-bottom: 16px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+#ads-page .ad-banner:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+    border-color: #74c0fc !important;
+}
+
+#ads-page .ad-banner h3 {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 12px !important;
+    line-height: 1.3 !important;
+}
+
+#ads-page .ad-banner p {
+    font-size: 18px !important;
+    color: #64748b !important;
+    margin-bottom: 20px !important;
+    line-height: 1.6 !important;
+}
+
+#ads-page .ad-banner button {
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 16px 32px !important;
+    border-radius: 8px !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 56px !important;
+    box-shadow: 0 4px 12px rgba(116, 192, 252, 0.3) !important;
+}
+
+#ads-page .ad-banner button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(116, 192, 252, 0.4) !important;
+}
+
+/* =====================================
+   우선순위별 색상 (높음/중간/낮음)
+   ===================================== */
+
+/* 높은 우선순위 - 빨간색 */
+#ads-page .ad-banner.priority-high {
+    background: linear-gradient(145deg, #fff5f5 0%, #ffe6e9 100%) !important;
+    border-left: 6px solid #dc3545 !important;
+}
+
+#ads-page .ad-banner.priority-high:hover {
+    border-color: #dc3545 !important;
+}
+
+#ads-page .ad-banner.priority-high button {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+}
+
+/* 중간 우선순위 - 주황색 */
+#ads-page .ad-banner.priority-medium {
+    background: linear-gradient(145deg, #fff8f0 0%, #ffe8cc 100%) !important;
+    border-left: 6px solid #fd7e14 !important;
+}
+
+#ads-page .ad-banner.priority-medium:hover {
+    border-color: #fd7e14 !important;
+}
+
+#ads-page .ad-banner.priority-medium button {
+    background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%) !important;
+    box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3) !important;
+}
+
+/* 낮은 우선순위 - 파란색 */
+#ads-page .ad-banner.priority-low {
+    background: linear-gradient(145deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+    border-left: 6px solid #74c0fc !important;
+}
+
+#ads-page .ad-banner.priority-low:hover {
+    border-color: #74c0fc !important;
+}
+
+#ads-page .ad-banner.priority-low button {
+    background: linear-gradient(135deg, #74c0fc 0%, #5eb3fc 100%) !important;
+    box-shadow: 0 4px 12px rgba(116, 192, 252, 0.3) !important;
+}
+
+/* =====================================
+   광고 카테고리별 스타일
+   ===================================== */
+
+#ads-page .ad-category-section {
+    margin-bottom: 24px !important;
+}
+
+#ads-page .ad-category-title {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+    padding-left: 16px !important;
+    border-left: 4px solid #74c0fc !important;
+}
+
+/* =====================================
+   광고 없음 상태
+   ===================================== */
+
+#ads-page .ad-empty-container,
+#ads-page .ad-empty-state {
+    text-align: center !important;
+    padding: 80px 20px !important;
+    color: #94a3b8 !important;
+}
+
+#ads-page .ad-empty-icon {
+    font-size: 80px !important;
+    margin-bottom: 24px !important;
+    opacity: 0.6 !important;
+}
+
+#ads-page .ad-empty-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    margin-bottom: 12px !important;
+}
+
+#ads-page .ad-empty-description {
+    font-size: 18px !important;
+    color: #94a3b8 !important;
+}
+
+/* =====================================
+   광고 콘텐츠 영역
+   ===================================== */
+
+#ads-page .ad-content {
+    padding: 20px !important;
+    text-align: center !important;
+    background: white !important;
+    transition: all 0.3s ease !important;
+}
+
+#ads-page .ad-content:hover {
+    background: #f8f9fa !important;
+}
+
+#ads-page .ad-title {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 10px !important;
+}
+
+#ads-page .ad-subtitle {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.5 !important;
+}
+
+/* =====================================
+   탭 콘텐츠 영역
+   ===================================== */
+
+#ads-page .ad-tabs-content {
+    padding: 10px 0 !important;
+}
+
+#ads-page .tab-content {
+    display: none !important;
+}
+
+#ads-page .tab-content.active {
+    display: block !important;
+    animation: fadeIn 0.3s ease !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================
+   로딩 상태
+   ===================================== */
+
+#ads-page .loading-ads {
+    text-align: center !important;
+    padding: 60px 20px !important;
+}
+
+#ads-page .loading-ads-icon {
+    font-size: 48px !important;
+    margin-bottom: 20px !important;
+    animation: spin 1s linear infinite !important;
+}
+
+#ads-page .loading-ads-text {
+    color: #475569 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* =====================================
+   우선순위 배지
+   ===================================== */
+
+#ads-page .priority-badge {
+    display: inline-block !important;
+    padding: 6px 14px !important;
+    border-radius: 16px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 12px !important;
+}
+
+#ads-page .priority-badge.high {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+#ads-page .priority-badge.medium {
+    background: #fd7e14 !important;
+    color: white !important;
+}
+
+#ads-page .priority-badge.low {
+    background: #74c0fc !important;
+    color: white !important;
+}
+
+/* =====================================
+   반응형 디자인
+   ===================================== */
+
+@media (max-width: 768px) {
+    #ads-page {
+        font-size: 17px !important;
+    }
+
+    #ads-page .header .logo {
+        font-size: 24px !important;
+    }
+
+    #ads-page .header .tagline {
+        font-size: 15px !important;
+    }
+
+    #ads-page .tabs {
+        flex-direction: column !important;
+        padding: 16px !important;
+        gap: 12px !important;
+        min-height: auto !important;
+    }
+
+    #ads-page .tab {
+        max-width: 100% !important;
+        width: 100% !important;
+        font-size: 18px !important;
+        padding: 16px 20px !important;
+    }
+
+    #ads-page .ad-banner {
+        padding: 20px !important;
+    }
+
+    #ads-page .ad-banner h3 {
+        font-size: 22px !important;
+    }
+
+    #ads-page .ad-banner p {
+        font-size: 17px !important;
+    }
+
+    #ads-page .ad-banner button {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #ads-page {
+        font-size: 16px !important;
+    }
+
+    #ads-page .header .logo {
+        font-size: 22px !important;
+    }
+
+    #ads-page .tabs {
+        padding: 14px !important;
+        gap: 10px !important;
+    }
+
+    #ads-page .tab {
+        font-size: 17px !important;
+        padding: 14px 16px !important;
+    }
+
+    #ads-page .ad-banner {
+        padding: 18px !important;
+    }
+
+    #ads-page .ad-banner h3 {
+        font-size: 20px !important;
+    }
+
+    #ads-page .ad-category-title {
+        font-size: 20px !important;
+    }
+
+    #ads-page .ad-empty-icon {
+        font-size: 64px !important;
+    }
+
+    #ads-page .ad-empty-title {
+        font-size: 22px !important;
+    }
+}
+
+/* =====================================
+   접근성 개선
+   ===================================== */
+
+/* 포커스 표시 강화 */
+#ads-page button:focus,
+#ads-page .tab:focus {
+    outline: 3px solid #74c0fc !important;
+    outline-offset: 2px !important;
+}
+
+/* 터치 영역 확대 */
+#ads-page button,
+#ads-page .tab {
+    min-height: 48px !important;
+    touch-action: manipulation !important;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+    #ads-page .ad-banner {
+        border-width: 3px !important;
+    }
+
+    #ads-page .tab {
+        border-width: 3px !important;
+    }
+
+    #ads-page button {
+        border: 2px solid currentColor !important;
+    }
+
+    #ads-page .tabs {
+        border-width: 3px !important;
+    }
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 생명구조 시스템 응급상황 아이콘 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FF0000">
+    
+    <!-- 응급 경고 아이콘 (삼각형 + 느낌표) -->
+    <path
+        android:fillColor="#FF0000"
+        android:pathData="M12,2L2,22H22L12,2zM13,17H11V15H13V17zM13,13H11V7H13V13z"/>
+    
+    <!-- 119 응급신고 십자가 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,10H16V14H8V10z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,8H14V16H10V8z"/>
+</vector>

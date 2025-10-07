@@ -1,0 +1,421 @@
+/**
+ * ===== LONELY CARE - 친구 관리 페이지 전용 CSS (노인 친화적 v2) =====
+ * 파일명: friends-isolated.css
+ * 목적: 친구 관리 페이지 완전 격리 + 노인 친화적 디자인
+ * 네임스페이스: #friends-page
+ *
+ * 🎨 노인 친화적 디자인 원칙:
+ * - 큰 글자: 최소 18px, 제목 24px+
+ * - 높은 대비: 명확한 색상 구분
+ * - 넉넉한 터치: 버튼 최소 44px 높이
+ * - 명확한 구분: 테두리와 배경색으로 섹션 구분
+ */
+
+/* =====================================
+   페이지 기본 레이아웃
+   ===================================== */
+
+#friends-page {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    color: #333 !important;
+}
+
+/* 헤더 영역 */
+#friends-page .header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 20px 0;
+}
+
+#friends-page .header .logo {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px;
+}
+
+#friends-page .header .tagline {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.5;
+}
+
+/* =====================================
+   프로필 섹션 (공통 카드 스타일)
+   ===================================== */
+
+#friends-page .profile-section {
+    background: #f8f9fa !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+#friends-page .profile-section h3 {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 12px !important;
+}
+
+#friends-page .profile-section h4 {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
+    margin-bottom: 10px !important;
+}
+
+#friends-page .profile-section p {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.6 !important;
+}
+
+/* =====================================
+   친구 목록 섹션
+   ===================================== */
+
+#friends-page .friend-list {
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+    border: 2px solid #74c0fc !important;
+}
+
+/* 로딩 컨테이너 */
+#friends-page #friends-loading-container {
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+    padding: 40px !important;
+    border: 2px solid #cce6ff !important;
+    border-radius: 12px !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
+    box-shadow: 0 4px 20px rgba(102, 179, 255, 0.15) !important;
+}
+
+#friends-page .stable-loading-spinner {
+    text-align: center;
+}
+
+/* 친구 카드 */
+#friends-page .friend-card {
+    background: white !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-bottom: 16px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.3s ease !important;
+}
+
+#friends-page .friend-card:hover {
+    border-color: #74c0fc !important;
+    box-shadow: 0 4px 12px rgba(116, 192, 252, 0.2) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* 친구 정보 */
+#friends-page .friend-card .friend-info {
+    margin-bottom: 16px;
+}
+
+#friends-page .friend-card .friend-name {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px !important;
+}
+
+#friends-page .friend-card .friend-email {
+    font-size: 16px !important;
+    color: #64748b !important;
+    margin-bottom: 6px !important;
+}
+
+#friends-page .friend-card .last-activity {
+    font-size: 16px !important;
+    color: #475569 !important;
+    font-weight: 500 !important;
+}
+
+/* 친구 액션 버튼 */
+#friends-page .friend-card .friend-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+#friends-page .friend-card .friend-actions button {
+    flex: 1;
+    padding: 14px 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 48px !important;
+}
+
+#friends-page .friend-card .btn-primary {
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%) !important;
+    color: white !important;
+}
+
+#friends-page .friend-card .btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(116, 192, 252, 0.3) !important;
+}
+
+#friends-page .friend-card .btn-danger {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+#friends-page .friend-card .btn-danger:hover {
+    background: #c82333 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+}
+
+/* =====================================
+   나의 초대코드 섹션
+   ===================================== */
+
+#friends-page .invite-code-container {
+    background: white !important;
+    padding: 20px !important;
+    border-radius: 10px !important;
+    border: 2px solid #74c0fc !important;
+    margin: 16px 0 !important;
+}
+
+#friends-page .invite-code-display {
+    display: flex !important;
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+}
+
+#friends-page .invite-code-display input {
+    flex: 1 !important;
+    padding: 16px !important;
+    border: 3px solid #74c0fc !important;
+    border-radius: 10px !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    letter-spacing: 3px !important;
+    background: #f0f8ff !important;
+    color: #1e40af !important;
+}
+
+#friends-page .btn-copy {
+    background: #74c0fc !important;
+    color: white !important;
+    border: none !important;
+    padding: 16px 24px !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    min-width: 100px !important;
+    min-height: 56px !important;
+}
+
+#friends-page .btn-copy:hover {
+    background: #5eb3fc !important;
+    transform: scale(1.05) !important;
+}
+
+#friends-page .btn-copy:active {
+    transform: scale(0.98) !important;
+}
+
+/* 새 코드 생성 버튼 */
+#friends-page #generate-code-btn {
+    width: 100% !important;
+    padding: 14px 20px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    background: #6c757d !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 52px !important;
+}
+
+#friends-page #generate-code-btn:hover {
+    background: #5a6268 !important;
+    transform: translateY(-2px) !important;
+}
+
+/* =====================================
+   친구 추가 섹션
+   ===================================== */
+
+#friends-page .form-group {
+    margin-bottom: 0 !important;
+}
+
+#friends-page .form-group input[type="text"] {
+    width: 100% !important;
+    padding: 16px !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 8px !important;
+    font-size: 18px !important;
+    margin-bottom: 12px !important;
+    transition: all 0.3s ease !important;
+}
+
+#friends-page .form-group input[type="text"]:focus {
+    outline: none !important;
+    border-color: #74c0fc !important;
+    box-shadow: 0 0 0 3px rgba(116, 192, 252, 0.1) !important;
+}
+
+#friends-page .form-group input[type="text"]::placeholder {
+    color: #94a3b8 !important;
+    font-size: 16px !important;
+}
+
+#friends-page #add-friend-btn {
+    width: 100% !important;
+    padding: 16px 20px !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 56px !important;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
+}
+
+#friends-page #add-friend-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4) !important;
+}
+
+#friends-page #add-friend-btn:active {
+    transform: translateY(0) !important;
+}
+
+/* =====================================
+   내부 카드 스타일 (나의 초대코드 / 친구 추가)
+   ===================================== */
+
+/* 🚨 이 섹션의 CSS 규칙들은 제거됨 - 인라인 스타일이 우선됨 */
+/* 이유: attribute selector로 인한 예기치 않은 스타일 충돌 방지 */
+
+/* =====================================
+   반응형 디자인
+   ===================================== */
+
+@media (max-width: 768px) {
+    #friends-page {
+        font-size: 17px !important;
+    }
+
+    #friends-page .header .logo {
+        font-size: 24px !important;
+    }
+
+    #friends-page .header .tagline {
+        font-size: 15px !important;
+    }
+
+    #friends-page .profile-section {
+        padding: 16px !important;
+    }
+
+    #friends-page .profile-section h3 {
+        font-size: 22px !important;
+    }
+
+    #friends-page .friend-card .friend-name {
+        font-size: 22px !important;
+    }
+
+    #friends-page .friend-card .friend-actions {
+        flex-direction: column;
+    }
+
+    #friends-page .friend-card .friend-actions button {
+        width: 100% !important;
+    }
+
+    #friends-page .invite-code-display {
+        flex-direction: column;
+    }
+
+    #friends-page .btn-copy {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #friends-page {
+        font-size: 16px !important;
+    }
+
+    #friends-page .header .logo {
+        font-size: 22px !important;
+    }
+
+    #friends-page .profile-section {
+        padding: 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    #friends-page .profile-section h3 {
+        font-size: 20px !important;
+    }
+
+    #friends-page .friend-card {
+        padding: 16px !important;
+    }
+
+    #friends-page .friend-card .friend-name {
+        font-size: 20px !important;
+    }
+}
+
+/* =====================================
+   접근성 개선
+   ===================================== */
+
+/* 포커스 표시 강화 */
+#friends-page button:focus,
+#friends-page input:focus {
+    outline: 3px solid #74c0fc !important;
+    outline-offset: 2px !important;
+}
+
+/* 터치 영역 확대 */
+#friends-page button,
+#friends-page .btn-copy,
+#friends-page #add-friend-btn {
+    min-height: 48px !important;
+    touch-action: manipulation !important;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+    #friends-page .profile-section {
+        border-width: 3px !important;
+    }
+
+    #friends-page .friend-card {
+        border-width: 3px !important;
+    }
+
+    #friends-page button {
+        border: 2px solid currentColor !important;
+    }
+}

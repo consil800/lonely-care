@@ -1,0 +1,219 @@
+/* ===== 안심케어 앱 공통 기본 스타일 ===== */
+/* 전체 애플리케이션에서 사용되는 기본 스타일 모음 */
+
+/* ===== 전역 기본 스타일 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5 !important;
+    min-height: 100vh;
+    color: #333;
+    overflow-x: hidden;
+    opacity: 1 !important;
+}
+
+/* ===== 메인 컨테이너 ===== */
+
+/* 컨테이너 */
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden; /* 중요: 컨텐츠 넘침 방지 */
+    opacity: 1 !important;
+}
+
+/* 로그인 상태가 아닐 때 컨테이너 패딩 제거 */
+.container:has(#login-page.active) {
+    padding-bottom: 0;
+}
+
+/* 로그인 후 상태에서만 패딩 적용 */
+.container:has(.bottom-nav.show) {
+    padding-bottom: 80px;
+}
+
+/* 페이지 */
+.page {
+    display: none !important;
+    padding: 20px;
+    min-height: calc(100vh - 80px);
+    overflow-y: auto;
+    background: #ffffff !important;
+    opacity: 1 !important;
+}
+
+.page.active {
+    display: block !important;
+    opacity: 1 !important;
+    background: #ffffff !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ===== 폼 요소 ===== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #74c0fc;
+}
+
+/* ===== 버튼 ===== */
+.btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 8px rgba(116, 192, 252, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-small {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+/* ===== 하단 네비게이션 바 ===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: none !important;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+/* 로그인 후에만 네비게이션 표시 */
+.bottom-nav.show {
+    display: flex !important;
+}
+
+.nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+    background: none;
+    color: #666;
+}
+
+.nav-item.active {
+    background: #f0f8ff;
+    color: #74c0fc;
+}
+
+.nav-item:hover {
+    background: #f8f9fa;
+}
+
+.nav-icon {
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+.nav-text {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ===== HTML에서 추출한 메인 앱 공통 인라인 CSS ===== */
+
+/* 메인 앱 숨김 상태 */
+.main-app-hidden {
+    display: none !important;
+}
+
+/* 하단 네비게이션 바 인라인 스타일 */
+.bottom-nav-styled {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: white !important;
+    border-top: 1px solid #e0e0e0 !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    padding: 10px 0 !important;
+    z-index: 1000 !important;
+}
+
+/* 네비게이션 버튼 기본 스타일 */
+.nav-btn-styled {
+    flex: 1 !important;
+    background: none !important;
+    border: none !important;
+    padding: 8px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    font-size: 12px !important;
+    color: #666 !important;
+}
+
+/* 활성 네비게이션 버튼 */
+.nav-btn-active {
+    color: #4CAF50 !important;
+}
+
+/* 네비게이션 아이콘 */
+.nav-icon-styled {
+    font-size: 20px !important;
+    margin-bottom: 4px !important;
+}

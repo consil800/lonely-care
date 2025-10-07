@@ -1,0 +1,630 @@
+/**
+ * ===== LONELY CARE - 프로필 설정 페이지 전용 CSS (노인 친화적 v2) =====
+ * 파일명: profile-isolated.css
+ * 목적: 프로필 설정 페이지 완전 격리 + 노인 친화적 디자인
+ * 네임스페이스: #profile-page
+ *
+ * 🎨 노인 친화적 디자인 원칙:
+ * - 큰 글자: 최소 18px, 제목 24px+
+ * - 높은 대비: 명확한 색상 구분
+ * - 넉넉한 터치: 버튼 최소 48px 높이
+ * - 명확한 구분: 테두리와 배경색으로 섹션 구분
+ */
+
+/* =====================================
+   페이지 기본 레이아웃
+   ===================================== */
+
+#profile-page {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    color: #333 !important;
+}
+
+/* 헤더 영역 */
+#profile-page .header {
+    text-align: center !important;
+    margin-bottom: 24px !important;
+    padding: 20px 0 !important;
+}
+
+#profile-page .header .logo {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px !important;
+}
+
+#profile-page .header .tagline {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.5 !important;
+}
+
+/* =====================================
+   프로필 섹션 (공통 카드 스타일)
+   ===================================== */
+
+#profile-page .profile-section {
+    background: #f8f9fa !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+#profile-page .profile-section h3 {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 2px solid #e9ecef !important;
+}
+
+#profile-page .profile-section h4 {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
+    margin-bottom: 12px !important;
+}
+
+#profile-page .profile-section p {
+    font-size: 16px !important;
+    color: #64748b !important;
+    line-height: 1.6 !important;
+}
+
+/* =====================================
+   프로필 사진 업로드
+   ===================================== */
+
+#profile-page .profile-photo-container {
+    text-align: center !important;
+    margin: 20px 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+#profile-page .profile-pic-preview,
+#profile-page .memorial-pic-preview {
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50% !important;
+    border: 4px solid #e9ecef !important;
+    object-fit: cover !important;
+    margin: 0 auto 16px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+#profile-page .memorial-pic-preview {
+    border-radius: 12px !important;
+}
+
+#profile-page .profile-pic-placeholder,
+#profile-page .memorial-pic-placeholder {
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50% !important;
+    border: 4px dashed #cbd5e1 !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 16px !important;
+    color: #94a3b8 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+#profile-page .memorial-pic-placeholder {
+    border-radius: 12px !important;
+}
+
+#profile-page .profile-pic-placeholder:hover,
+#profile-page .memorial-pic-placeholder:hover {
+    border-color: #74c0fc !important;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+    color: #74c0fc !important;
+}
+
+#profile-page .profile-photo-input,
+#profile-page .memorial-photo-input {
+    display: none !important;
+}
+
+#profile-page .profile-upload-note {
+    font-size: 14px !important;
+    color: #94a3b8 !important;
+    text-align: center !important;
+    margin-top: 8px !important;
+}
+
+/* =====================================
+   폼 입력 필드
+   ===================================== */
+
+#profile-page .form-group {
+    margin-bottom: 20px !important;
+}
+
+#profile-page .form-group label {
+    display: block !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
+    margin-bottom: 8px !important;
+}
+
+#profile-page .form-group input[type="text"],
+#profile-page .form-group input[type="email"],
+#profile-page .form-group input[type="tel"],
+#profile-page .form-group input[type="date"],
+#profile-page .form-group textarea,
+#profile-page .form-group select {
+    width: 100% !important;
+    padding: 16px !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 8px !important;
+    font-size: 18px !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    color: #1e293b !important;
+}
+
+#profile-page .form-group input:focus,
+#profile-page .form-group textarea:focus,
+#profile-page .form-group select:focus {
+    outline: none !important;
+    border-color: #74c0fc !important;
+    box-shadow: 0 0 0 3px rgba(116, 192, 252, 0.1) !important;
+}
+
+#profile-page .form-group input::placeholder,
+#profile-page .form-group textarea::placeholder {
+    color: #94a3b8 !important;
+    font-size: 16px !important;
+}
+
+#profile-page .form-group textarea {
+    min-height: 120px !important;
+    resize: vertical !important;
+}
+
+/* =====================================
+   긴급 연락처 섹션
+   ===================================== */
+
+#profile-page .emergency-contacts {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%) !important;
+    border: 2px solid #ffc107 !important;
+    border-left: 6px solid #ffc107 !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    margin: 20px 0 !important;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2) !important;
+}
+
+#profile-page .emergency-contacts h4 {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #856404 !important;
+    margin-bottom: 16px !important;
+}
+
+#profile-page .emergency-contact-item {
+    background: white !important;
+    padding: 16px !important;
+    border-radius: 8px !important;
+    margin-bottom: 12px !important;
+    border: 2px solid #f8d7da !important;
+}
+
+#profile-page .emergency-contact-item:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* =====================================
+   버튼 스타일
+   ===================================== */
+
+#profile-page button {
+    padding: 16px 24px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 56px !important;
+}
+
+#profile-page .btn-primary,
+#profile-page .profile-save-btn {
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%) !important;
+    color: white !important;
+    width: 100% !important;
+    box-shadow: 0 2px 8px rgba(116, 192, 252, 0.3) !important;
+}
+
+#profile-page .btn-primary:hover,
+#profile-page .profile-save-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(116, 192, 252, 0.4) !important;
+}
+
+#profile-page .btn-secondary {
+    background: #6c757d !important;
+    color: white !important;
+}
+
+#profile-page .btn-secondary:hover {
+    background: #5a6268 !important;
+    transform: translateY(-2px) !important;
+}
+
+#profile-page .btn-danger,
+#profile-page .profile-logout-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+    color: white !important;
+    width: 100% !important;
+    margin-top: 12px !important;
+}
+
+#profile-page .btn-danger:hover,
+#profile-page .profile-logout-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+}
+
+#profile-page .btn-upload {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: white !important;
+}
+
+#profile-page .btn-upload:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+}
+
+/* =====================================
+   파일 업로드 인터페이스
+   ===================================== */
+
+#profile-page .file-upload {
+    border: 3px dashed #cbd5e1 !important;
+    padding: 30px !important;
+    text-align: center !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+
+#profile-page .file-upload:hover {
+    border-color: #74c0fc !important;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%) !important;
+}
+
+#profile-page .file-upload-icon {
+    font-size: 48px !important;
+    margin-bottom: 16px !important;
+    color: #94a3b8 !important;
+}
+
+#profile-page .file-upload-text {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+}
+
+/* =====================================
+   구독 관리 섹션
+   ===================================== */
+
+#profile-page .subscription-section {
+    background: linear-gradient(135deg, #e3f2fd 0%, #d0e9ff 100%) !important;
+    border: 2px solid #74c0fc !important;
+    border-left: 6px solid #74c0fc !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    margin: 20px 0 !important;
+}
+
+#profile-page .subscription-section h4 {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+}
+
+#profile-page .subscription-status {
+    display: inline-block !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+}
+
+#profile-page .subscription-status.active {
+    background: #28a745 !important;
+    color: white !important;
+}
+
+#profile-page .subscription-status.inactive {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+#profile-page .subscription-expiry {
+    font-size: 18px !important;
+    color: #475569 !important;
+    margin-bottom: 16px !important;
+}
+
+#profile-page .subscription-btn-basic {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+    color: white !important;
+}
+
+#profile-page .subscription-btn-premium {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+    color: #1e293b !important;
+}
+
+#profile-page .subscription-btn-auto-renew {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: white !important;
+}
+
+#profile-page .subscription-btn-cancel {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+    color: white !important;
+}
+
+#profile-page .subscription-btn-manage {
+    background: #6c757d !important;
+    color: white !important;
+}
+
+/* =====================================
+   플랜 비교 테이블
+   ===================================== */
+
+#profile-page .plan-comparison {
+    margin-top: 24px !important;
+}
+
+#profile-page .plans-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 20px !important;
+    margin-top: 16px !important;
+}
+
+#profile-page .plan-card {
+    background: white !important;
+    border: 2px solid #e9ecef !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    transition: all 0.3s ease !important;
+}
+
+#profile-page .plan-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+#profile-page .plan-card-basic {
+    border: 3px solid #17a2b8 !important;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f7fc 100%) !important;
+}
+
+#profile-page .plan-card-premium {
+    border: 3px solid #ffc107 !important;
+    background: linear-gradient(135deg, #fffbf0 0%, #fff3cd 100%) !important;
+}
+
+#profile-page .plan-card h5 {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+}
+
+#profile-page .plan-price {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: #74c0fc !important;
+    margin-bottom: 16px !important;
+}
+
+#profile-page .plan-features {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#profile-page .plan-features li {
+    font-size: 16px !important;
+    color: #475569 !important;
+    padding: 10px 0 !important;
+    border-bottom: 1px solid #e9ecef !important;
+}
+
+#profile-page .plan-features li:last-child {
+    border-bottom: none !important;
+}
+
+/* =====================================
+   초대코드 표시
+   ===================================== */
+
+#profile-page .invite-code-container {
+    background: white !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    border: 2px solid #74c0fc !important;
+    margin: 16px 0 !important;
+}
+
+#profile-page .invite-code-display {
+    display: flex !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+}
+
+#profile-page .invite-code-display input {
+    flex: 1 !important;
+    padding: 18px !important;
+    border: 3px solid #74c0fc !important;
+    border-radius: 10px !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    letter-spacing: 4px !important;
+    background: #f0f8ff !important;
+    color: #1e40af !important;
+}
+
+#profile-page .btn-copy {
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 18px 28px !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    min-width: 120px !important;
+    min-height: 60px !important;
+}
+
+#profile-page .btn-copy:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 12px rgba(116, 192, 252, 0.3) !important;
+}
+
+/* =====================================
+   반응형 디자인
+   ===================================== */
+
+@media (max-width: 768px) {
+    #profile-page {
+        font-size: 17px !important;
+    }
+
+    #profile-page .header .logo {
+        font-size: 24px !important;
+    }
+
+    #profile-page .header .tagline {
+        font-size: 15px !important;
+    }
+
+    #profile-page .profile-section {
+        padding: 16px !important;
+    }
+
+    #profile-page .profile-section h3 {
+        font-size: 22px !important;
+    }
+
+    #profile-page .form-group input,
+    #profile-page .form-group textarea,
+    #profile-page .form-group select {
+        font-size: 17px !important;
+    }
+
+    #profile-page .plans-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    #profile-page .invite-code-display {
+        flex-direction: column !important;
+    }
+
+    #profile-page .btn-copy {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #profile-page {
+        font-size: 16px !important;
+    }
+
+    #profile-page .header .logo {
+        font-size: 22px !important;
+    }
+
+    #profile-page .profile-section {
+        padding: 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    #profile-page .profile-section h3 {
+        font-size: 20px !important;
+    }
+
+    #profile-page .profile-pic-preview,
+    #profile-page .memorial-pic-preview,
+    #profile-page .profile-pic-placeholder,
+    #profile-page .memorial-pic-placeholder {
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    #profile-page button {
+        font-size: 17px !important;
+    }
+}
+
+/* =====================================
+   접근성 개선
+   ===================================== */
+
+/* 포커스 표시 강화 */
+#profile-page button:focus,
+#profile-page input:focus,
+#profile-page textarea:focus,
+#profile-page select:focus {
+    outline: 3px solid #74c0fc !important;
+    outline-offset: 2px !important;
+}
+
+/* 터치 영역 확대 */
+#profile-page button,
+#profile-page .btn-copy,
+#profile-page .file-upload {
+    min-height: 48px !important;
+    touch-action: manipulation !important;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+    #profile-page .profile-section {
+        border-width: 3px !important;
+    }
+
+    #profile-page .form-group input,
+    #profile-page .form-group textarea,
+    #profile-page .form-group select {
+        border-width: 3px !important;
+    }
+
+    #profile-page button {
+        border: 2px solid currentColor !important;
+    }
+
+    #profile-page .plan-card {
+        border-width: 3px !important;
+    }
+}

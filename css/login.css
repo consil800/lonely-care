@@ -1,0 +1,225 @@
+/* ===== 안심케어 앱 로그인 페이지 스타일 ===== */
+/* 로그인 및 인증 관련 모든 스타일 */
+
+/* ===== 로그인 페이지 최적화 ===== */
+#login-page {
+    padding: 0;
+    min-height: 100vh;
+}
+
+#login-page.active {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ===== 로그인 컨테이너 반응형 ===== */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 20px !important;
+    }
+    
+    .auth-container > div {
+        padding: 20px !important;
+    }
+    
+    .kakao-login-btn {
+        font-size: 15px;
+        padding: 14px 20px;
+    }
+}
+
+/* ===== 헤더 ===== */
+/* 헤더 - 메인 앱에서 숨김 */
+#main-app .header {
+    display: none !important;
+}
+
+/* 페이지 헤더 (각 페이지 내부) */
+.page .header {
+    background: linear-gradient(135deg, #74c0fc 0%, #91c3ff 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin: -20px -20px 20px -20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.tagline {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* ===== HTML에서 추출한 로그인 관련 인라인 CSS ===== */
+
+/* 로그인 페이지 표시 상태 */
+.login-page-visible {
+    display: block !important;
+}
+
+/* 인증 컨테이너 */
+.auth-container-styled {
+    max-width: 400px !important;
+    margin: 100px auto !important;
+    padding: 40px !important;
+    background: white !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important;
+    text-align: center !important;
+}
+
+/* 환영 메시지 컨테이너 */
+.welcome-message-container {
+    margin-bottom: 30px !important;
+}
+
+/* 환영 메시지 제목 */
+.welcome-title {
+    color: #2c3e50 !important;
+    margin-bottom: 10px !important;
+    font-size: 24px !important;
+}
+
+/* 환영 메시지 설명 */
+.welcome-description {
+    color: #7f8c8d !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+}
+
+/* 계정 복구 섹션 */
+.account-recovery-section {
+    margin-top: 20px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid #ecf0f1 !important;
+}
+
+/* 계정 복구 제목 */
+.account-recovery-title {
+    color: #34495e !important;
+    font-size: 16px !important;
+    margin-bottom: 15px !important;
+}
+
+/* 백업 코드 입력 필드 */
+.backup-code-input {
+    width: 100% !important;
+    padding: 12px !important;
+    border: 2px solid #ecf0f1 !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    margin-bottom: 10px !important;
+    box-sizing: border-box !important;
+}
+
+/* 계정 복구 버튼 */
+.restore-account-btn {
+    width: 100% !important;
+    padding: 12px !important;
+    background: #3498db !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: background 0.3s ease !important;
+}
+
+/* 서비스 정보 섹션 */
+.service-info-section {
+    margin-top: 30px !important;
+    padding: 20px !important;
+    background: #f8f9fa !important;
+    border-radius: 12px !important;
+}
+
+/* 서비스 정보 제목 */
+.service-info-title {
+    color: #2c3e50 !important;
+    margin-bottom: 15px !important;
+    font-size: 16px !important;
+}
+
+/* 서비스 특징 목록 */
+.service-features-list {
+    text-align: left !important;
+    color: #5a6c7d !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    padding-left: 20px !important;
+}
+
+/* 서비스 특징 항목 */
+.service-feature-item {
+    margin-bottom: 8px !important;
+}
+
+/* ===== 카카오 로그인 버튼 스타일 ===== */
+.kakao-login-btn {
+    background: linear-gradient(135deg, #FEE500 0%, #FDD835 100%);
+    color: #3C1E1E;
+    border: none;
+    border-radius: 16px;
+    padding: 20px 32px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(254, 229, 0, 0.4);
+    min-height: 64px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 카카오 로그인 버튼 인라인 스타일 오버라이드 */
+.kakao-login-btn-styled {
+    width: 100% !important;
+    padding: 15px 20px !important;
+    background: #FEE500 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    color: #3C1E1E !important;
+    cursor: pointer !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+.kakao-login-btn:hover {
+    background: linear-gradient(135deg, #FDD835 0%, #F9A825 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(254, 229, 0, 0.6);
+}
+
+.kakao-login-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(254, 229, 0, 0.4);
+}
+
+.kakao-login-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* 카카오 로그인 버튼 내 이미지 */
+.kakao-login-img {
+    width: 20px !important;
+    height: 20px !important;
+}

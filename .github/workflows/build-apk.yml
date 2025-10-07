@@ -1,0 +1,48 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout 코드
+      uses: actions/checkout@v3
+
+    - name: Java 17 설정
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+
+    - name: 웹 파일 → assets 복사
+      run: |
+        cd android-native/app/src/main/assets
+        rm -rf *
+        cp -r ../../../../../index.html .
+        cp -r ../../../../../css .
+        cp -r ../../../../../js .
+        cp -r ../../../../../admin .
+        cp -r ../../../../../components . || true
+
+    - name: Gradle 권한 부여
+      run: chmod +x android-native/gradlew
+
+    - name: APK 빌드
+      run: |
+        cd android-native
+        ./gradlew assembleRelease --no-daemon --warning-mode all
+
+    - name: APK 업로드
+      uses: actions/upload-artifact@v3
+      with:
+        name: lonely-care-apk
+        path: android-native/app/build/outputs/apk/release/*.apk
+        retention-days: 30

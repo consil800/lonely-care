@@ -1,0 +1,85 @@
+plugins {
+    id 'com.android.application'
+    // Firebase Google Services 플러그인 적용 - 생명구조 시스템 FCM 지원
+    id 'com.google.gms.google-services'
+}
+
+// 키스토어 설정 로드 (보안 강화)
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace 'com.lonelycare.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.lonelycare.app"
+        minSdk 23
+        targetSdk 34
+        versionCode 140
+        versionName "1.0.0"
+    }
+
+    // 서명 설정 (release용) - 보안 강화 (3단계 우선순위)
+    signingConfigs {
+        release {
+            // 1순위: 환경변수, 2순위: properties 파일, 3순위: 기본값 (개발용)
+            storeFile file(keystoreProperties['storeFile'] ?: "../keystore/lonely-care-release.keystore")
+            storePassword System.getenv("KEYSTORE_PASSWORD") ?: 
+                         keystoreProperties['storePassword'] ?: 
+                         "lonely-care-2025"
+            keyAlias keystoreProperties['keyAlias'] ?: "lonely-care-key"
+            keyPassword System.getenv("KEY_PASSWORD") ?: 
+                       keystoreProperties['keyPassword'] ?: 
+                       "lonely-care-2025"
+        }
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            debuggable false
+            jniDebuggable false
+            zipAlignEnabled true
+
+            // 프로덕션 빌드 최적화
+            buildConfigField "boolean", "DEBUG_MODE", "false"
+            buildConfigField "String", "APP_ENVIRONMENT", "\"production\""
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+            buildConfigField "boolean", "DEBUG_MODE", "true"
+            buildConfigField "String", "APP_ENVIRONMENT", "\"development\""
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.webkit:webkit:1.4.0'
+    
+    // 카카오 SDK
+    implementation "com.kakao.sdk:v2-user:2.15.0"
+    
+    // Firebase BOM (Bill of Materials) - 생명구조 시스템 안정성 보장
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    
+    // Firebase 핵심 라이브러리들 - 생명구조 시스템 FCM 백그라운드 알림 지원
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
+    
+    // Google Play Services - FCM 의존성
+    implementation 'com.google.android.gms:play-services-base:18.2.0'
+}

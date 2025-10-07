@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_blue">#2C3E50</color>
+    <color name="primary_dark">#1A252F</color>
+    <color name="accent_gray">#BDC3C7</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    
+    <!-- 생명구조 시스템 FCM 알림 색상 -->
+    <color name="fcm_notification_color">#FF6B35</color>
+    <color name="fcm_emergency_color">#FF0000</color>
+    <color name="fcm_danger_color">#FF6B35</color>
+    <color name="fcm_warning_color">#FFC107</color>
+    <color name="fcm_general_color">#2196F3</color>
+</resources>
