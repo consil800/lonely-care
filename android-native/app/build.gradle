@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'kotlin-android'
     // Firebase Google Services 플러그인 적용 - 생명구조 시스템 FCM 지원
     id 'com.google.gms.google-services'
 }
@@ -68,18 +69,21 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.webkit:webkit:1.4.0'
-    
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     // 카카오 SDK
     implementation "com.kakao.sdk:v2-user:2.15.0"
-    
+
     // Firebase BOM (Bill of Materials) - 생명구조 시스템 안정성 보장
     implementation platform('com.google.firebase:firebase-bom:32.7.0')
-    
+
     // Firebase 핵심 라이브러리들 - 생명구조 시스템 FCM 백그라운드 알림 지원
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-firestore'
-    
+
     // Google Play Services - FCM 의존성
     implementation 'com.google.android.gms:play-services-base:18.2.0'
 }
